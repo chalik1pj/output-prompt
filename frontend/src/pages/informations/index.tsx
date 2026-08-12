@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import { PageHeader } from '@/components/site/page-header'
-import { NewsCard } from '@/components/site/news-card'
+import { NewsCard, type NewsCardItem } from '@/components/site/news-card'
 import { Reveal } from '@/components/site/reveal'
 import api from '@/lib/api'
 
 export default function InformationsPage() {
-  const [news, setNews] = useState<any[]>([])
+  const [news, setNews] = useState<NewsCardItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.get('/posts?content_type=news').then((res) => {
-      setNews(res.data.data || [])
-    }).catch(() => {}).finally(() => setLoading(false))
+    // type=berita -> hanya kategori "Berita" (terpisah dari Pengumuman yang
+    // punya halaman /announcements sendiri, lihat lib/site.ts).
+    api
+      .get('/posts', { params: { type: 'berita', per_page: 9 } })
+      .then((res) => setNews(res.data.data || []))
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   return (
@@ -29,13 +33,11 @@ export default function InformationsPage() {
             <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           </div>
         ) : news.length === 0 ? (
-          <div className="text-center py-16 text-muted-foreground">
-            Belum ada berita yang diterbitkan.
-          </div>
+          <div className="py-16 text-center text-muted-foreground">Belum ada berita yang diterbitkan.</div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {news.map((item, i) => (
-              <Reveal key={item.slug || item.id} delay={i * 0.05}>
+              <Reveal key={item.slug} delay={i * 0.05}>
                 <NewsCard item={item} />
               </Reveal>
             ))}

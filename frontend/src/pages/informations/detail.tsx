@@ -1,26 +1,54 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { CalendarDays, ChevronRight, User } from 'lucide-react'
-import ReactMarkdown from 'react-markdown'
+import { CalendarDays, ChevronRight, Clock, User } from 'lucide-react'
+import { NewsCard, type NewsCardItem } from '@/components/site/news-card'
 import { PageHeader } from '@/components/site/page-header'
-import { GlassCard } from '@/components/site/glass-card'
 import { Reveal } from '@/components/site/reveal'
+import { sanitizeHtml } from '@/lib/sanitize'
 import api from '@/lib/api'
 
+interface PostDetail {
+  id: number
+  content_type: string
+  category: string | null
+  title: string
+  excerpt: string | null
+  content: string | null
+  featured_image_url: string | null
+  read_time_minutes: number | null
+  published_at: string | null
+  author: { name: string } | null
+  program: { name: string; slug: string } | null
+  lecturer: { name: string } | null
+}
+
+function formatDate(value?: string | null): string {
+  if (!value) return ''
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return value
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+}
+
 export default function InformationDetailPage() {
-  const { slug } = useParams<{ slug: string }>()
-  const [post, setPost] = useState<any>(null)
+  // Route: /informations/:contentType/:slug -- backend butuh KEDUANYA
+  // (GET /api/posts/{contentType}/{slug}), bukan cuma slug.
+  const { contentType, slug } = useParams<{ contentType: string; slug: string }>()
+  const [post, setPost] = useState<PostDetail | null>(null)
+  const [related, setRelated] = useState<NewsCardItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!slug) return
+    if (!contentType || !slug) return
     setLoading(true)
-    api.get(`/posts/${slug}`).then((res) => {
-      setPost(res.data.data)
-    }).catch(() => {
-      setPost(null)
-    }).finally(() => setLoading(false))
-  }, [slug])
+    api
+      .get(`/posts/${contentType}/${slug}`)
+      .then((res) => {
+        setPost(res.data.data)
+        setRelated(res.data.related ?? [])
+      })
+      .catch(() => setPost(null))
+      .finally(() => setLoading(false))
+  }, [contentType, slug])
 
   if (loading) {
     return (
@@ -34,10 +62,10 @@ export default function InformationDetailPage() {
     return (
       <div className="mx-content flex min-h-[60vh] flex-col items-center justify-center text-center">
         <h1 className="font-display text-3xl font-bold">Berita Tidak Ditemukan</h1>
-        <p className="mt-2 text-muted-foreground">Artikel berita yang Anda cari tidak tersedia.</p>
+        <p className="mt-2 text-muted-foreground">Artikel yang Anda cari tidak tersedia atau sudah dihapus.</p>
         <div className="mt-6">
           <Link to="/informations" className="rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">
-            Lihat Berita Lainnya
+            Lihat Informasi Lainnya
           </Link>
         </div>
       </div>
@@ -47,7 +75,7 @@ export default function InformationDetailPage() {
   return (
     <>
       <PageHeader
-        eyebrow={post.category_name || 'Berita Kampus'}
+        eyebrow={post.category || 'Informasi Kampus'}
         title={post.title}
         variant="news"
         breadcrumb={
@@ -57,7 +85,7 @@ export default function InformationDetailPage() {
               <ChevronRight className="size-3" />
               <Link to="/informations" className="hover:text-primary">Informasi</Link>
               <ChevronRight className="size-3" />
-              <span className="text-foreground truncate max-w-[200px]">{post.title}</span>
+              <span className="max-w-[200px] truncate text-foreground">{post.title}</span>
             </nav>
           </div>
         }
@@ -65,32 +93,78 @@ export default function InformationDetailPage() {
 
       <section className="mx-content py-16">
         <div className="mx-auto max-w-3xl space-y-8">
-          <div className="flex items-center gap-6 text-sm text-muted-foreground border-b border-border pb-6">
+          <div className="flex flex-wrap items-center gap-6 border-b border-border pb-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <CalendarDays className="size-4 text-primary" />
-              {post.published_at_formatted || post.published_at}
+              {formatDate(post.published_at)}
             </span>
-            {post.author_name && (
+            {post.read_time_minutes ? (
+              <span className="flex items-center gap-2">
+                <Clock className="size-4 text-primary" />
+                {post.read_time_minutes} menit baca
+              </span>
+            ) : null}
+            {post.author?.name && (
               <span className="flex items-center gap-2">
                 <User className="size-4 text-primary" />
-                {post.author_name}
+                {post.author.name}
               </span>
             )}
           </div>
 
-          {post.thumbnail_url && (
+          {post.featured_image_url && (
             <div className="overflow-hidden rounded-3xl border border-border">
-              <img src={post.thumbnail_url} alt={post.title} className="w-full max-h-[450px] object-cover" />
+              <img
+                src={post.featured_image_url}
+                alt={post.title}
+                className="max-h-[450px] w-full object-cover"
+              />
             </div>
           )}
 
-          {/* Render Markdown Content using react-markdown per user requirement */}
+          {post.excerpt && (
+            <p className="text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
+          )}
+
+          {/* Content HTML disanitasi via DOMPurify sebelum dirender -- lihat
+              07-keamanan.md §2 (stored XSS adalah risiko terbesar di seluruh sistem
+              kalau field ini dirender mentah). */}
           <Reveal>
-            <div className="prose prose-slate dark:prose-invert max-w-none leading-relaxed">
-              <ReactMarkdown>{post.content || post.excerpt || ''}</ReactMarkdown>
-            </div>
+            <div
+              className="prose prose-slate dark:prose-invert max-w-none leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content ?? '') }}
+            />
           </Reveal>
+
+          {(post.program || post.lecturer) && (
+            <div className="flex flex-wrap gap-3 border-t border-border pt-6">
+              {post.program && (
+                <Link
+                  to={`/programs/${post.program.slug}`}
+                  className="rounded-full border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40"
+                >
+                  Program terkait: {post.program.name}
+                </Link>
+              )}
+              {post.lecturer && (
+                <span className="rounded-full border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground">
+                  Dosen terkait: {post.lecturer.name}
+                </span>
+              )}
+            </div>
+          )}
         </div>
+
+        {related.length > 0 && (
+          <div className="mx-auto mt-16 max-w-5xl">
+            <h2 className="font-display text-xl font-bold">Berita Terkait</h2>
+            <div className="mt-6 grid gap-6 md:grid-cols-3">
+              {related.map((item) => (
+                <NewsCard key={item.slug} item={item} />
+              ))}
+            </div>
+          </div>
+        )}
       </section>
     </>
   )

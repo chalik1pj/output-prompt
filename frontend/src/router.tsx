@@ -81,7 +81,7 @@ export const router = createBrowserRouter([
 
       { path: 'contact', element: <SuspenseWrap><ContactPage /></SuspenseWrap> },
       { path: 'informations', element: <SuspenseWrap><InformationsPage /></SuspenseWrap> },
-      { path: 'informations/:slug', element: <SuspenseWrap><InformationDetailPage /></SuspenseWrap> },
+      { path: 'informations/:contentType/:slug', element: <SuspenseWrap><InformationDetailPage /></SuspenseWrap> },
       { path: 'announcements', element: <SuspenseWrap><AnnouncementsPage /></SuspenseWrap> },
 
       { path: 'students', element: <SuspenseWrap><StudentsPage /></SuspenseWrap> },

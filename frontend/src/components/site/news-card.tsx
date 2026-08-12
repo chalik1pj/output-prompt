@@ -1,15 +1,31 @@
 import { ArrowUpRight, CalendarDays, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export function NewsCard({ item }: { item: any }) {
-  const title = item.title
-  const slug = item.slug
-  const image = item.image || item.thumbnail_url || '/images/news-1.png'
-  const category = item.category || item.category_name || 'Berita'
-  const date = item.date || item.published_at_formatted || item.published_at || '10 Agt 2025'
-  const readTime = item.readTime || item.read_time || '4 mnt baca'
-  const excerpt = item.excerpt || item.summary || item.meta_description || ''
-  const linkTo = slug ? `/informations/${slug}` : '/informations'
+export interface NewsCardItem {
+  content_type: string
+  slug: string
+  title: string
+  excerpt?: string | null
+  featured_image_url?: string | null
+  category?: string | null
+  published_at?: string | null
+  read_time_minutes?: number | null
+}
+
+function formatDate(value?: string | null): string {
+  if (!value) return ''
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return value
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+/**
+ * Kartu berita/pengumuman/kegiatan/prestasi -- link SELALU menyertakan
+ * `content_type` (bukan cuma slug), karena backend butuh keduanya untuk
+ * GET /api/posts/{contentType}/{slug}. Lihat DESIGN.md §11.
+ */
+export function NewsCard({ item }: { item: NewsCardItem }) {
+  const linkTo = `/informations/${item.content_type}/${item.slug}`
 
   return (
     <Link
@@ -18,30 +34,34 @@ export function NewsCard({ item }: { item: any }) {
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
         <img
-          src={image}
-          alt={title}
+          src={item.featured_image_url || '/images/news-1.png'}
+          alt={item.title}
           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <span className="absolute left-4 top-4 rounded-full bg-background/85 px-3 py-1 text-xs font-semibold text-primary backdrop-blur">
-          {category}
-        </span>
+        {item.category && (
+          <span className="absolute left-4 top-4 rounded-full bg-background/85 px-3 py-1 text-xs font-semibold text-primary backdrop-blur">
+            {item.category}
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <CalendarDays className="size-3.5" />
-            {date}
+            {formatDate(item.published_at)}
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Clock className="size-3.5" />
-            {readTime}
-          </span>
+          {item.read_time_minutes ? (
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="size-3.5" />
+              {item.read_time_minutes} menit baca
+            </span>
+          ) : null}
         </div>
         <h3 className="mt-3 font-display text-lg font-bold leading-snug tracking-tight text-balance">
-          {title}
+          {item.title}
         </h3>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-          {excerpt}
+          {item.excerpt}
         </p>
         <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
           Baca Selengkapnya

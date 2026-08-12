@@ -2,6 +2,8 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import { Navbar } from '@/components/site/navbar'
 import { Footer } from '@/components/site/footer'
+import { BackToTop } from '@/components/site/back-to-top'
+import { PageTransition } from '@/components/site/page-transition'
 
 export default function PublicLayout() {
   const { pathname } = useLocation()
@@ -14,10 +16,13 @@ export default function PublicLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
-      <main className="flex-1 pt-20">
-        <Outlet />
+      <main className="flex-1">
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
       </main>
       <Footer />
+      <BackToTop />
     </div>
   )
 }
