@@ -30,7 +30,9 @@ const PrestasiMahasiswaPage = lazy(() => import('@/pages/students/prestasi'))
 const PertukaranMahasiswaPage = lazy(() => import('@/pages/students/pertukaran'))
 const BeasiswaPage = lazy(() => import('@/pages/students/beasiswa'))
 
-const AcademicsPage = lazy(() => import('@/pages/academics'))
+const KegiatanAkademikPage = lazy(() => import('@/pages/academics/kegiatan'))
+const PrestasiKampusPage = lazy(() => import('@/pages/academics/prestasi-kampus'))
+const PrestasiDosenPage = lazy(() => import('@/pages/academics/prestasi-dosen'))
 const AdmissionsPage = lazy(() => import('@/pages/admissions'))
 const NotFound = lazy(() => import('@/pages/not-found'))
 
@@ -90,9 +92,9 @@ export const router = createBrowserRouter([
       { path: 'students/pertukaran-mahasiswa', element: <SuspenseWrap><PertukaranMahasiswaPage /></SuspenseWrap> },
       { path: 'students/beasiswa', element: <SuspenseWrap><BeasiswaPage /></SuspenseWrap> },
 
-      { path: 'academics/kegiatan-akademik', element: <SuspenseWrap><AcademicsPage /></SuspenseWrap> },
-      { path: 'academics/prestasi-kampus', element: <SuspenseWrap><AcademicsPage /></SuspenseWrap> },
-      { path: 'academics/prestasi-dosen', element: <SuspenseWrap><AcademicsPage /></SuspenseWrap> },
+      { path: 'academics/kegiatan-akademik', element: <SuspenseWrap><KegiatanAkademikPage /></SuspenseWrap> },
+      { path: 'academics/prestasi-kampus', element: <SuspenseWrap><PrestasiKampusPage /></SuspenseWrap> },
+      { path: 'academics/prestasi-dosen', element: <SuspenseWrap><PrestasiDosenPage /></SuspenseWrap> },
 
       { path: 'admissions', element: <SuspenseWrap><AdmissionsPage /></SuspenseWrap> },
 

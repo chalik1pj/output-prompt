@@ -1,43 +1,65 @@
+import { Trophy } from 'lucide-react'
 import { useState } from 'react'
+import { AnimatedCounter } from '@/components/site/animated-counter'
 import { Breadcrumb } from '@/components/site/breadcrumb'
 import { CategoryFilter } from '@/components/site/category-filter'
+import { GlassCard } from '@/components/site/glass-card'
 import { ListingCard, type ListingCardItem } from '@/components/site/listing-card'
 import { PageHeader } from '@/components/site/page-header'
 import { Pagination } from '@/components/site/pagination'
 import { Reveal } from '@/components/site/reveal'
 import { usePaginatedPosts } from '@/hooks/use-paginated-posts'
 
-const categories = [
-  'Semua',
-  'Kompetisi Teknologi',
-  'Olimpiade & Lomba Akademik',
-  'Prestasi Olahraga & Seni',
-  'Penghargaan Organisasi',
+const categories = ['Semua', 'Kompetisi Mahasiswa', 'Penghargaan Kelembagaan', 'Kerjasama & Riset']
+
+const statsData = [
+  { label: 'Penghargaan Diterima', value: 48, suffix: '+' },
+  { label: 'Kompetisi Dimenangkan', value: 32, suffix: '+' },
+  { label: 'Kerjasama Riset', value: 15, suffix: '+' },
 ]
 
 const breadcrumbItems = [
   { label: 'Beranda', href: '/' },
-  { label: 'Mahasiswa', href: '/students/kegiatan-mahasiswa' },
-  { label: 'Prestasi Mahasiswa' },
+  { label: 'Akademik', href: '/programs' },
+  { label: 'Prestasi Kampus' },
 ]
 
-export default function PrestasiMahasiswaPage() {
+export default function PrestasiKampusPage() {
   const [active, setActive] = useState('Semua')
   const { items, meta, loading, goToPage } = usePaginatedPosts<ListingCardItem>({
-    type: 'prestasi_mahasiswa',
+    type: 'prestasi_kampus',
     category: active === 'Semua' ? undefined : active,
   })
 
   return (
     <>
       <PageHeader
-        eyebrow="Mahasiswa · Prestasi"
-        title="Karya dan Prestasi Mahasiswa Kami"
-        description="Kompetisi teknologi, olimpiade, hingga prestasi non-akademik — kebanggaan yang lahir dari kerja keras mahasiswa kami."
+        eyebrow="Akademik · Prestasi Kampus"
+        title="Pencapaian yang Membanggakan"
+        description="Setiap penghargaan adalah bukti komitmen kami terhadap kualitas pendidikan dan kontribusi bagi masyarakat."
         variant="prestasi"
         breadcrumb={<Breadcrumb items={breadcrumbItems} />}
       />
 
+      {/* Stats -- konten tetap, bukan dari database (lihat DESIGN.md §11) */}
+      <section className="mx-content py-12">
+        <div className="grid gap-6 sm:grid-cols-3">
+          {statsData.map((stat, i) => (
+            <Reveal key={stat.label} index={i}>
+              <GlassCard className="flex flex-col items-center p-6 text-center" hover>
+                <Trophy className="mb-3 size-8 text-primary dark:text-accent" />
+                <span className="text-3xl font-extrabold text-foreground">
+                  <AnimatedCounter value={stat.value} />
+                  {stat.suffix}
+                </span>
+                <span className="mt-1 text-sm text-muted-foreground">{stat.label}</span>
+              </GlassCard>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Filters + Grid */}
       <section className="mx-content py-12">
         <CategoryFilter categories={categories} active={active} onChange={setActive} />
 

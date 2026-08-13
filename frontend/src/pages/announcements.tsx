@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
-import { Megaphone, CalendarDays } from 'lucide-react'
-import { PageHeader } from '@/components/site/page-header'
+import { useState } from 'react'
+import { CalendarDays, Megaphone } from 'lucide-react'
+import { CategoryFilter } from '@/components/site/category-filter'
 import { GlassCard } from '@/components/site/glass-card'
+import { PageHeader } from '@/components/site/page-header'
+import { Pagination } from '@/components/site/pagination'
 import { Reveal } from '@/components/site/reveal'
 import { sanitizeHtml } from '@/lib/sanitize'
-import api from '@/lib/api'
+import { usePaginatedPosts } from '@/hooks/use-paginated-posts'
 
 interface Announcement {
   id: number
@@ -16,6 +18,8 @@ interface Announcement {
   published_at: string | null
 }
 
+const categories = ['Semua', 'Akademik', 'Kemahasiswaan', 'Penerimaan Mahasiswa Baru', 'Umum/Administratif']
+
 function formatDate(value?: string | null): string {
   if (!value) return ''
   const d = new Date(value)
@@ -24,18 +28,14 @@ function formatDate(value?: string | null): string {
 }
 
 export default function AnnouncementsPage() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // type=pengumuman -- satu-satunya content_type yang dipetakan ke halaman ini
-    // (lihat DESIGN.md §11).
-    api
-      .get('/posts', { params: { type: 'pengumuman', per_page: 20 } })
-      .then((res) => setAnnouncements(res.data.data || []))
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [])
+  const [active, setActive] = useState('Semua')
+  // type=pengumuman -- satu-satunya content_type yang dipetakan ke halaman ini
+  // (lihat DESIGN.md §11).
+  const { items, meta, loading, goToPage } = usePaginatedPosts<Announcement>({
+    type: 'pengumuman',
+    category: active === 'Semua' ? undefined : active,
+    perPage: 8,
+  })
 
   return (
     <>
@@ -46,16 +46,18 @@ export default function AnnouncementsPage() {
         variant="pengumuman"
       />
 
-      <section className="mx-content py-20">
-        <div className="mx-auto max-w-4xl space-y-6">
+      <section className="mx-content py-12">
+        <CategoryFilter categories={categories} active={active} onChange={setActive} />
+
+        <div className="mx-auto mt-10 max-w-4xl space-y-6">
           {loading ? (
             <div className="flex min-h-[40vh] items-center justify-center">
               <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
             </div>
-          ) : announcements.length === 0 ? (
-            <div className="py-16 text-center text-muted-foreground">Belum ada pengumuman resmi.</div>
+          ) : items.length === 0 ? (
+            <div className="py-16 text-center text-muted-foreground">Belum ada pengumuman di kategori ini.</div>
           ) : (
-            announcements.map((item, i) => (
+            items.map((item, i) => (
               <Reveal key={item.slug} delay={i * 0.05}>
                 <GlassCard className="space-y-4 p-6 md:p-8">
                   <div className="flex items-center justify-between gap-4">
@@ -78,6 +80,12 @@ export default function AnnouncementsPage() {
             ))
           )}
         </div>
+
+        {meta && (
+          <div className="mx-auto max-w-4xl">
+            <Pagination meta={meta} onPageChange={goToPage} />
+          </div>
+        )}
       </section>
     </>
   )

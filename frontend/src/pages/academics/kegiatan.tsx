@@ -9,32 +9,33 @@ import { usePaginatedPosts } from '@/hooks/use-paginated-posts'
 
 const categories = [
   'Semua',
-  'Unit Kegiatan Mahasiswa (UKM)',
-  'Kegiatan Sosial & Pengabdian',
-  'Event Kampus',
-  'Organisasi Mahasiswa',
+  'Wisuda & Yudisium',
+  'Seminar & Kuliah Tamu',
+  'Workshop Teknologi',
+  'Kerjasama Industri',
+  'PMB',
 ]
 
 const breadcrumbItems = [
   { label: 'Beranda', href: '/' },
-  { label: 'Mahasiswa', href: '/students/kegiatan-mahasiswa' },
-  { label: 'Kegiatan Mahasiswa' },
+  { label: 'Akademik', href: '/programs' },
+  { label: 'Kegiatan Akademik' },
 ]
 
-export default function KegiatanMahasiswaPage() {
+export default function KegiatanAkademikPage() {
   const [active, setActive] = useState('Semua')
   const { items, meta, loading, goToPage } = usePaginatedPosts<ListingCardItem>({
-    type: 'kegiatan_mahasiswa',
+    type: 'kegiatan_akademik',
     category: active === 'Semua' ? undefined : active,
   })
 
   return (
     <>
       <PageHeader
-        eyebrow="Mahasiswa · Kegiatan"
-        title="Denyut Kehidupan Kampus"
-        description="Dari unit kegiatan mahasiswa hingga festival tahunan — inilah semarak aktivitas kemahasiswaan STIKOM Tunas Bangsa."
-        variant="mahasiswa"
+        eyebrow="Akademik · Kegiatan"
+        title="Dinamika Akademik Sepanjang Tahun"
+        description="Seminar, workshop, kuliah tamu, hingga wisuda — dokumentasi lengkap aktivitas akademik kampus kami."
+        variant="kegiatan"
         breadcrumb={<Breadcrumb items={breadcrumbItems} />}
       />
 
