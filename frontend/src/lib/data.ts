@@ -15,17 +15,6 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
-/**
- * Konten di file ini SENGAJA statis (bukan fetch API) -- persis sama seperti source
- * asli (08-referensi-source-asli/lib/data.ts). Field-field ini tidak masuk skema
- * database (lihat DESIGN.md §11: "campusHighlights" dan "features" bukan salah satu
- * dari 4 widget_type yang ada, jadi tetap sebagai konten tetap di frontend, sama
- * seperti perilaku source aslinya).
- *
- * Data yang MEMANG database-driven (programs, posts, testimonials, partners, stats)
- * di-fetch dari API di masing-masing komponen section -- lihat components/sections/*.
- */
-
 export type Feature = {
   icon: LucideIcon
   title: string
@@ -127,7 +116,6 @@ export const timeline: TimelineItem[] = [
   },
 ]
 
-// "Tentang STIKOM" -- 4 kartu kecil di bawah copy About, Beranda
 export const campusHighlights: Value[] = [
   {
     icon: FlaskConical,

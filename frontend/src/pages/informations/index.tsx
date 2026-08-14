@@ -10,8 +10,6 @@ const categories = ['Semua', 'Acara', 'Kemitraan', 'Penelitian']
 
 export default function InformationsPage() {
   const [active, setActive] = useState('Semua')
-  // type=berita -> hanya kategori "Berita" (terpisah dari Pengumuman yang
-  // punya halaman /announcements sendiri, lihat lib/site.ts).
   const { items, meta, loading, goToPage } = usePaginatedPosts<NewsCardItem>({
     type: 'berita',
     category: active === 'Semua' ? undefined : active,

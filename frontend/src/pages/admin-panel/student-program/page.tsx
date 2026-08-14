@@ -38,8 +38,6 @@ export default function StudentProgramListPage() {
   const [form, setForm] = useState<FormState>(emptyForm)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // program_type -> `type`, 'scholarship' -> 'beasiswa' (dua bug lama sekaligus:
-  // parameter salah DAN value enum salah, filter tidak pernah cocok apa pun).
   const params = useMemo(() => ({ type: activeTab, per_page: 20 }), [activeTab])
   const { data, isLoading } = useAdminList<AdminStudentProgram>('admin/student-programs', 'student-programs', params)
   const createMutation = useAdminCreate<AdminStudentProgram>('admin/student-programs', 'student-programs', 'Program berhasil ditambahkan.')
@@ -122,9 +120,8 @@ export default function StudentProgramListPage() {
           <button
             key={t.type}
             onClick={() => setActiveTab(t.type)}
-            className={`border-b-2 pb-3 text-sm font-semibold transition-colors ${
-              activeTab === t.type ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
+            className={`border-b-2 pb-3 text-sm font-semibold transition-colors ${activeTab === t.type ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
           >
             {t.label}
           </button>

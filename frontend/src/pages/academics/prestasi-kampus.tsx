@@ -41,7 +41,6 @@ export default function PrestasiKampusPage() {
         breadcrumb={<Breadcrumb items={breadcrumbItems} />}
       />
 
-      {/* Stats -- konten tetap, bukan dari database (lihat DESIGN.md §11) */}
       <section className="mx-content py-12">
         <div className="grid gap-6 sm:grid-cols-3">
           {statsData.map((stat, i) => (

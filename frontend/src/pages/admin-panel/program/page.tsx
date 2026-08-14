@@ -54,7 +54,7 @@ export default function ProgramListPage() {
               setSearchInput(e.target.value)
               setPage(1)
             }}
-            className="form-input pl-9 text-sm"
+            className="form-input !pl-9 text-sm"
           />
           {isFetching && !isLoading && (
             <div className="absolute right-3 top-1/2 size-3.5 -translate-y-1/2 animate-spin rounded-full border-2 border-primary border-t-transparent" />

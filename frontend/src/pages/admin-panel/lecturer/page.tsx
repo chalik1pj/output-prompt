@@ -39,7 +39,6 @@ export default function LecturerListPage() {
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    // Daftar program studi untuk dropdown -- cukup diambil sekali, jarang berubah.
     api.get('/programs').then((res) => setPrograms(res.data.data ?? []))
   }, [])
 
@@ -127,7 +126,7 @@ export default function LecturerListPage() {
               setSearchInput(e.target.value)
               setPage(1)
             }}
-            className="form-input pl-9 text-sm"
+            className="form-input !pl-9 text-sm"
           />
           {isFetching && !isLoading && (
             <div className="absolute right-3 top-1/2 size-3.5 -translate-y-1/2 animate-spin rounded-full border-2 border-primary border-t-transparent" />

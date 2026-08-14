@@ -30,8 +30,6 @@ export default function AdminListPage() {
   const [form, setForm] = useState<FormState>(emptyForm)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Endpoint yang benar adalah /admin/admins (Route::apiResource('admins', ...)),
-  // bukan /admin/users seperti sebelumnya -- itu 404 setiap kali dipanggil.
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['admins', 'list'],
     queryFn: async () => (await api.get<{ data: AdminAccount[] }>('/admin/admins')).data.data,
@@ -41,9 +39,6 @@ export default function AdminListPage() {
   const createMutation = useAdminCreate<AdminAccount>('admin/admins', 'admins', 'Akun admin berhasil dibuat.')
   const deleteMutation = useAdminDelete('admin/admins', 'admins', 'Akun admin dihapus.')
 
-  // Guard ganda: sidebar sudah menyembunyikan menu ini untuk editor, tapi kalau
-  // diakses langsung lewat URL, halaman ini WAJIB menolak juga -- kontrol akses
-  // sungguhan tetap di backend (403), ini cuma lapisan UX tambahan.
   if (currentUser && currentUser.role !== 'super_admin') {
     return <Navigate to="/admin-panel/dashboard" replace />
   }

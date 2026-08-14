@@ -30,8 +30,6 @@ function formatDate(value?: string | null): string {
 }
 
 export default function InformationDetailPage() {
-  // Route: /informations/:contentType/:slug -- backend butuh KEDUANYA
-  // (GET /api/posts/{contentType}/{slug}), bukan cuma slug.
   const { contentType, slug } = useParams<{ contentType: string; slug: string }>()
   const [post, setPost] = useState<PostDetail | null>(null)
   const [related, setRelated] = useState<NewsCardItem[]>([])
@@ -126,9 +124,6 @@ export default function InformationDetailPage() {
             <p className="text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
           )}
 
-          {/* content berformat Markdown (bukan HTML) -- react-markdown aman dari XSS
-              by construction, tidak merender tag HTML mentah, lihat DESIGN.md §11
-              & catatan revisi format konten. */}
           <Reveal>
             <div className="prose prose-slate dark:prose-invert max-w-none leading-relaxed">
               <ReactMarkdown>{post.content ?? ''}</ReactMarkdown>

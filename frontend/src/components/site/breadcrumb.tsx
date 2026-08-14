@@ -6,10 +6,6 @@ type BreadcrumbItem = {
   href?: string
 }
 
-/**
- * Breadcrumb navigation bar rendered above the PageHeader.
- * The last item is treated as the current page (no link).
- */
 export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
   return (
     <nav

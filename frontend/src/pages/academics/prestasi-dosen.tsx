@@ -23,10 +23,6 @@ export default function PrestasiDosenPage() {
     type: 'prestasi_dosen',
     category: activeCategory === 'Semua' ? undefined : activeCategory,
   })
-
-  // Filter prodi dilakukan di sisi klien pada halaman yang sedang tampil --
-  // backend belum expose filter credited_program_text terpisah, jadi ini filter
-  // sekunder di atas hasil per-halaman (bukan di atas seluruh dataset).
   const visibleItems = useMemo(
     () =>
       activeProdi === 'Semua Prodi'

@@ -37,8 +37,6 @@ export default function WidgetListPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<AdminWidget | null>(null)
   const [form, setForm] = useState<FormState>(emptyForm)
-
-  // widget_type -> `type` (bug lama: parameter salah, filter tidak pernah aktif)
   const params = useMemo(() => ({ type: activeTab, per_page: 30 }), [activeTab])
   const { data, isLoading } = useAdminList<AdminWidget>('admin/widgets', 'widgets', params)
   const createMutation = useAdminCreate<AdminWidget>('admin/widgets', 'widgets', 'Widget berhasil ditambahkan.')
@@ -113,9 +111,8 @@ export default function WidgetListPage() {
           <button
             key={t.type}
             onClick={() => setActiveTab(t.type)}
-            className={`shrink-0 border-b-2 pb-3 text-sm font-semibold transition-colors ${
-              activeTab === t.type ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
+            className={`shrink-0 border-b-2 pb-3 text-sm font-semibold transition-colors ${activeTab === t.type ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
+              }`}
           >
             {t.label}
           </button>

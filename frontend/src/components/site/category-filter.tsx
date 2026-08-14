@@ -9,7 +9,6 @@ export function CategoryFilter({
   categories: string[]
   active: string
   onChange: (cat: string) => void
-  /** 'small' produces compact chips for secondary filters */
   size?: 'default' | 'small'
 }) {
   return (

@@ -6,13 +6,9 @@ import { ThemeProvider } from '@/lib/theme-provider'
 import { AdminAuthProvider } from '@/hooks/useAdminAuth'
 import { ToastProvider } from '@/components/site/toast'
 import { ConfirmDialogProvider } from '@/components/site/confirm-dialog'
-import { router } from '@/router'
+import { router } from '@/routes/router'
 import './index.css'
 
-// staleTime 30s -> navigasi bolak-balik antar halaman admin tidak refetch ulang
-// data yang baru saja dimuat (ini yang paling terasa sebagai "loading lama").
-// retry: 1 -> gagal sekali karena jaringan flaky, coba ulang otomatis sebelum
-// menampilkan error ke user.
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

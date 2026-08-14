@@ -38,7 +38,6 @@ const emptyForm: FormState = {
   is_published: true,
 }
 
-/** Input tag sederhana -- ketik lalu Enter untuk menambah item ke array. */
 function TagListInput({
   label,
   hint,
