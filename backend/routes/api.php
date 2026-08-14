@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
     Route::get('/dashboard/stats', [AdminDashboardController::class, 'stats']);
     Route::get('/dashboard/recent-posts', [AdminDashboardController::class, 'recentPosts']);
+    Route::get('/dashboard/trend', [AdminDashboardController::class, 'trend']);
 
     Route::apiResource('posts', AdminPostController::class);
     Route::apiResource('programs', AdminProgramController::class)->except('destroy');

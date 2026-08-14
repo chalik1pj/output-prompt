@@ -136,12 +136,17 @@ class PostSeeder extends Seeder
         }
     }
 
+    // REVISI: format `content` distandarkan ke Markdown (bukan HTML) di seluruh
+    // sistem -- konsisten dengan editor Markdown di admin panel
+    // (pages/admin-panel/post/form.tsx) dan react-markdown di halaman publik
+    // (pages/informations/detail.tsx, pages/announcements.tsx). react-markdown
+    // TIDAK merender tag HTML mentah secara default, jadi aman dari XSS tanpa
+    // perlu DOMPurify.
     private function placeholderContent(string $excerpt): string
     {
-        return '<p>'.e($excerpt).'</p>'
-            .'<p><em>[DRAFT] Konten lengkap artikel ini belum ditulis -- data seed hanya '
-            .'memuat ringkasan dari sumber asli. Tim editorial harap melengkapi isi '
-            .'sebenarnya lewat admin panel sebelum dipublikasikan ke publik.</em></p>';
+        return $excerpt."\n\n*[DRAFT] Konten lengkap artikel ini belum ditulis -- data seed hanya ".
+            'memuat ringkasan dari sumber asli. Tim editorial harap melengkapi isi '.
+            'sebenarnya lewat admin panel sebelum dipublikasikan ke publik.*';
     }
 
     private function parseIndoDate(string $date): string

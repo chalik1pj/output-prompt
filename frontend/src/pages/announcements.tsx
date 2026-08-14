@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { CalendarDays, Megaphone } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { CategoryFilter } from '@/components/site/category-filter'
 import { GlassCard } from '@/components/site/glass-card'
 import { PageHeader } from '@/components/site/page-header'
 import { Pagination } from '@/components/site/pagination'
 import { Reveal } from '@/components/site/reveal'
-import { sanitizeHtml } from '@/lib/sanitize'
 import { usePaginatedPosts } from '@/hooks/use-paginated-posts'
 
 interface Announcement {
@@ -71,10 +71,9 @@ export default function AnnouncementsPage() {
                     </span>
                   </div>
                   <h2 className="font-display text-xl font-bold">{item.title}</h2>
-                  <div
-                    className="prose prose-slate dark:prose-invert max-w-none text-sm leading-relaxed text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.content ?? item.excerpt ?? '') }}
-                  />
+                  <div className="prose prose-slate dark:prose-invert max-w-none text-sm leading-relaxed text-muted-foreground">
+                    <ReactMarkdown>{item.content ?? item.excerpt ?? ''}</ReactMarkdown>
+                  </div>
                 </GlassCard>
               </Reveal>
             ))

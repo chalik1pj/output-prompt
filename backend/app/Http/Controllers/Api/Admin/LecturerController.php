@@ -10,9 +10,18 @@ class LecturerController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json(
-            Lecturer::with('program:id,name')->orderBy('name')->paginate($request->integer('per_page', 20))
-        );
+        $query = Lecturer::with('program:id,name')->orderBy('name');
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->string('search').'%');
+        }
+
+        return response()->json($query->paginate($request->integer('per_page', 20)));
+    }
+
+    public function show(Lecturer $lecturer)
+    {
+        return response()->json(['data' => $lecturer->load('program:id,name')]);
     }
 
     public function store(Request $request)

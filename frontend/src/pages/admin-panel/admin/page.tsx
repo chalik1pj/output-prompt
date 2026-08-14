@@ -1,57 +1,81 @@
-import { useEffect, useState } from 'react'
-import { Plus, Trash2, ShieldAlert } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Navigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { Plus, Trash2, ShieldCheck, X } from 'lucide-react'
 import { useAdminAuth } from '@/hooks/useAdminAuth'
 import { GlassCard } from '@/components/site/glass-card'
+import { TableShell } from '@/components/site/table-shell'
+import { useConfirm } from '@/components/site/confirm-dialog'
+import { FormInput, FormSelect } from '@/components/site/form-fields'
 import api from '@/lib/api'
+import { useAdminCreate, useAdminDelete, extractErrorMessage } from '@/lib/admin-api/use-admin-resource'
+import { useToast } from '@/components/site/toast'
+import type { AdminAccount } from '@/lib/admin-api/types'
+
+interface FormState {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+  role: 'super_admin' | 'editor'
+}
+
+const emptyForm: FormState = { name: '', email: '', password: '', password_confirmation: '', role: 'editor' }
 
 export default function AdminListPage() {
   const { admin: currentUser } = useAdminAuth()
-  const [admins, setAdmins] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const confirm = useConfirm()
+  const toast = useToast()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [form, setForm] = useState<FormState>(emptyForm)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const [showModal, setShowModal] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [role, setRole] = useState<'super_admin' | 'editor'>('editor')
+  // Endpoint yang benar adalah /admin/admins (Route::apiResource('admins', ...)),
+  // bukan /admin/users seperti sebelumnya -- itu 404 setiap kali dipanggil.
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['admins', 'list'],
+    queryFn: async () => (await api.get<{ data: AdminAccount[] }>('/admin/admins')).data.data,
+    enabled: currentUser?.role === 'super_admin',
+  })
 
-  const fetchAdmins = () => {
-    setLoading(true)
-    api.get('/admin/users').then((res) => {
-      setAdmins(res.data.data || [])
-    }).catch(() => {}).finally(() => setLoading(false))
+  const createMutation = useAdminCreate<AdminAccount>('admin/admins', 'admins', 'Akun admin berhasil dibuat.')
+  const deleteMutation = useAdminDelete('admin/admins', 'admins', 'Akun admin dihapus.')
+
+  // Guard ganda: sidebar sudah menyembunyikan menu ini untuk editor, tapi kalau
+  // diakses langsung lewat URL, halaman ini WAJIB menolak juga -- kontrol akses
+  // sungguhan tetap di backend (403), ini cuma lapisan UX tambahan.
+  if (currentUser && currentUser.role !== 'super_admin') {
+    return <Navigate to="/admin-panel/dashboard" replace />
   }
 
-  useEffect(() => {
-    if (currentUser?.role === 'super_admin') {
-      fetchAdmins()
+  const isLastSuperAdmin = (data?.filter((a) => a.role === 'super_admin').length ?? 0) <= 1
+
+  const handleDelete = async (account: AdminAccount) => {
+    if (account.id === currentUser?.id) {
+      toast.error('Anda tidak bisa menghapus akun sendiri.')
+      return
     }
-  }, [currentUser])
-
-  if (currentUser?.role !== 'super_admin') {
-    return (
-      <div className="p-12 text-center text-destructive space-y-2">
-        <ShieldAlert className="size-12 mx-auto" />
-        <h2 className="font-display text-xl font-bold">Akses Ditolak</h2>
-        <p className="text-sm">Halaman ini hanya dapat diakses oleh Super Admin.</p>
-      </div>
-    )
+    const ok = await confirm({ title: `Hapus akun "${account.name}"?`, description: account.email })
+    if (ok) deleteMutation.mutate(account.id)
   }
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await api.post('/admin/users', { name, email, password, role })
-    setShowModal(false)
-    setName('')
-    setEmail('')
-    setPassword('')
-    fetchAdmins()
-  }
+  const handleSubmit = async () => {
+    const e: Record<string, string> = {}
+    if (!form.name.trim()) e.name = 'Nama wajib diisi.'
+    if (!form.email.trim()) e.email = 'Email wajib diisi.'
+    if (form.password.length < 10) e.password = 'Password minimal 10 karakter.'
+    if (form.password !== form.password_confirmation) e.password_confirmation = 'Konfirmasi password tidak cocok.'
+    setErrors(e)
+    if (Object.keys(e).length > 0) return
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Hapus akun admin ini?')) return
-    await api.delete(`/admin/users/${id}`)
-    fetchAdmins()
+    try {
+      await createMutation.mutateAsync(form)
+      setModalOpen(false)
+      setForm(emptyForm)
+      refetch()
+    } catch (err) {
+      setErrors({ email: extractErrorMessage(err) })
+    }
   }
 
   return (
@@ -59,93 +83,82 @@ export default function AdminListPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold">Kelola Akun Admin</h1>
-          <p className="text-sm text-muted-foreground">Kelola pengguna panel admin dan hak akses (super_admin only).</p>
+          <p className="text-sm text-muted-foreground">Khusus Super Admin — kelola akses tim editorial.</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          onClick={() => {
+            setForm(emptyForm)
+            setErrors({})
+            setModalOpen(true)
+          }}
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5"
         >
           <Plus className="size-4" />
           Tambah Admin
         </button>
       </div>
 
-      <GlassCard className="overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center text-muted-foreground">Memuat data admin...</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-border bg-secondary/50 text-xs uppercase text-muted-foreground">
-                <tr>
-                  <th className="px-6 py-3">Nama</th>
-                  <th className="px-6 py-3">Email</th>
-                  <th className="px-6 py-3">Role</th>
-                  <th className="px-6 py-3 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {admins.map((u) => (
-                  <tr key={u.id} className="hover:bg-secondary/30 transition-colors">
-                    <td className="px-6 py-4 font-semibold">{u.name}</td>
-                    <td className="px-6 py-4 text-xs font-mono">{u.email}</td>
-                    <td className="px-6 py-4">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        u.role === 'super_admin' ? 'bg-purple-500/20 text-purple-300' : 'bg-secondary text-muted-foreground'
-                      }`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      {u.id !== currentUser?.id && (
-                        <button
-                          onClick={() => handleDelete(u.id)}
-                          className="inline-flex p-2 rounded-lg border border-destructive/30 hover:bg-destructive/10 text-destructive"
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <TableShell loading={isLoading} isEmpty={(data?.length ?? 0) === 0} columnCount={4} emptyMessage="Belum ada akun admin.">
+        <thead className="border-b border-border bg-secondary/50 text-xs uppercase text-muted-foreground">
+          <tr>
+            <th className="px-6 py-3">Nama</th>
+            <th className="px-6 py-3">Email</th>
+            <th className="px-6 py-3">Role</th>
+            <th className="px-6 py-3 text-right">Aksi</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-border">
+          {data?.map((acc) => (
+            <tr key={acc.id} className="transition-colors hover:bg-secondary/30">
+              <td className="px-6 py-4 font-semibold">
+                {acc.name} {acc.id === currentUser?.id && <span className="text-xs font-normal text-muted-foreground">(Anda)</span>}
+              </td>
+              <td className="px-6 py-4 text-sm text-muted-foreground">{acc.email}</td>
+              <td className="px-6 py-4">
+                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${acc.role === 'super_admin' ? 'bg-accent/15 text-accent' : 'bg-secondary text-muted-foreground'}`}>
+                  {acc.role === 'super_admin' && <ShieldCheck className="size-3" />}
+                  {acc.role === 'super_admin' ? 'Super Admin' : 'Editor'}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-right">
+                <button
+                  onClick={() => handleDelete(acc)}
+                  disabled={acc.id === currentUser?.id || (acc.role === 'super_admin' && isLastSuperAdmin)}
+                  title={acc.role === 'super_admin' && isLastSuperAdmin ? 'Tidak bisa menghapus super_admin terakhir' : undefined}
+                  className="inline-flex rounded-lg border border-destructive/30 p-2 text-destructive hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </TableShell>
+
+      {modalOpen && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold">Tambah Akun Admin</h2>
+              <button onClick={() => setModalOpen(false)}><X className="size-5" /></button>
+            </div>
+            <div className="space-y-4">
+              <FormInput label="Nama Lengkap" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} error={errors.name} />
+              <FormInput label="Email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} error={errors.email} />
+              <FormSelect label="Role" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value as FormState['role'] })}>
+                <option value="editor">Editor — hanya bisa kelola post miliknya sendiri</option>
+                <option value="super_admin">Super Admin — akses penuh</option>
+              </FormSelect>
+              <FormInput label="Password" type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} error={errors.password} hint="Minimal 10 karakter." />
+              <FormInput label="Konfirmasi Password" type="password" required value={form.password_confirmation} onChange={(e) => setForm({ ...form, password_confirmation: e.target.value })} error={errors.password_confirmation} />
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button onClick={() => setModalOpen(false)} className="rounded-xl border border-border px-4 py-2 text-sm font-semibold hover:bg-secondary">Batal</button>
+              <button onClick={handleSubmit} disabled={createMutation.isPending} className="rounded-xl bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60">
+                {createMutation.isPending ? 'Menyimpan...' : 'Buat Akun'}
+              </button>
+            </div>
           </div>
-        )}
-      </GlassCard>
-
-      {/* Modal Form */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <GlassCard strong className="w-full max-w-md p-6 space-y-4">
-            <h2 className="font-display text-xl font-bold">Tambah Admin Baru</h2>
-            <form onSubmit={handleSave} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1">Nama Lengkap</label>
-                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="form-input" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1">Email</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="form-input" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1">Password</label>
-                <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className="form-input" />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-muted-foreground mb-1">Role</label>
-                <select value={role} onChange={(e) => setRole(e.target.value as any)} className="form-input">
-                  <option value="editor">Editor</option>
-                  <option value="super_admin">Super Admin</option>
-                </select>
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm rounded-xl border border-border">Batal</button>
-                <button type="submit" className="px-4 py-2 text-sm rounded-xl bg-primary text-primary-foreground font-semibold">Simpan Admin</button>
-              </div>
-            </form>
-          </GlassCard>
         </div>
       )}
     </div>

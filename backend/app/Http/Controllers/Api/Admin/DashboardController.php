@@ -42,4 +42,23 @@ class DashboardController extends Controller
                 ->get(['id', 'content_type', 'title', 'status', 'author_id', 'updated_at']),
         ]);
     }
+
+    // GET /api/admin/dashboard/trend -- jumlah post dipublikasikan per hari, 14 hari
+    // terakhir. Dipakai chart tren di dashboard (tema SaaS statistik).
+    public function trend()
+    {
+        $days = collect(range(13, 0))->map(fn ($i) => now()->subDays($i)->toDateString());
+
+        $counts = Post::where('published_at', '>=', now()->subDays(13)->startOfDay())
+            ->selectRaw('DATE(published_at) as date, count(*) as total')
+            ->groupBy('date')
+            ->pluck('total', 'date');
+
+        return response()->json([
+            'data' => $days->map(fn ($date) => [
+                'date' => $date,
+                'total' => $counts[$date] ?? 0,
+            ])->values(),
+        ]);
+    }
 }

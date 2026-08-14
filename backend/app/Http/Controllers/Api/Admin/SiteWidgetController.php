@@ -19,6 +19,11 @@ class SiteWidgetController extends Controller
         return response()->json($query->paginate($request->integer('per_page', 30)));
     }
 
+    public function show(SiteWidget $widget)
+    {
+        return response()->json(['data' => $widget]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([

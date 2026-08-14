@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { CalendarDays, ChevronRight, Clock, User } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { NewsCard, type NewsCardItem } from '@/components/site/news-card'
 import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/site/reveal'
-import { sanitizeHtml } from '@/lib/sanitize'
 import api from '@/lib/api'
 
 interface PostDetail {
@@ -126,14 +126,13 @@ export default function InformationDetailPage() {
             <p className="text-lg leading-relaxed text-muted-foreground">{post.excerpt}</p>
           )}
 
-          {/* Content HTML disanitasi via DOMPurify sebelum dirender -- lihat
-              07-keamanan.md §2 (stored XSS adalah risiko terbesar di seluruh sistem
-              kalau field ini dirender mentah). */}
+          {/* content berformat Markdown (bukan HTML) -- react-markdown aman dari XSS
+              by construction, tidak merender tag HTML mentah, lihat DESIGN.md §11
+              & catatan revisi format konten. */}
           <Reveal>
-            <div
-              className="prose prose-slate dark:prose-invert max-w-none leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content ?? '') }}
-            />
+            <div className="prose prose-slate dark:prose-invert max-w-none leading-relaxed">
+              <ReactMarkdown>{post.content ?? ''}</ReactMarkdown>
+            </div>
           </Reveal>
 
           {(post.program || post.lecturer) && (

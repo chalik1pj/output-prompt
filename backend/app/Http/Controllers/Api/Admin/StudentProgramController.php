@@ -19,6 +19,11 @@ class StudentProgramController extends Controller
         return response()->json($query->paginate($request->integer('per_page', 20)));
     }
 
+    public function show(StudentProgram $studentProgram)
+    {
+        return response()->json(['data' => $studentProgram]);
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -43,6 +48,7 @@ class StudentProgramController extends Controller
     public function update(Request $request, StudentProgram $studentProgram)
     {
         $data = $request->validate([
+            'program_type' => 'sometimes|in:beasiswa,pertukaran',
             'name' => 'sometimes|string|max:200',
             'description' => 'nullable|string',
             'requirements' => 'nullable|string',

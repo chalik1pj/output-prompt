@@ -5,44 +5,58 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
+    private const CONTENT_TYPES = [
+        'berita', 'pengumuman', 'kegiatan_akademik', 'kegiatan_mahasiswa',
+        'prestasi_kampus', 'prestasi_dosen', 'prestasi_mahasiswa',
+    ];
+
     public function index(Request $request)
     {
+        $query = Post::query()->with('author:id,name')->latest('updated_at');
+
+        // Filter berdasarkan content_type -- dipakai dropdown filter di
+        // pages/admin-panel/post/page.tsx.
+        if ($request->filled('type')) {
+            $query->where('content_type', $request->string('type'));
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->string('status'));
+        }
+
+        // Pencarian server-side (judul), dipanggil dengan debounce di frontend
+        // (hooks/use-debounce.ts) supaya tidak query setiap keystroke.
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%'.$request->string('search').'%');
+        }
+
         return response()->json(
-            Post::latest()->paginate($request->integer('per_page', 15))
+            $query->paginate($request->integer('per_page', 15))
         );
+    }
+
+    public function show(Post $post)
+    {
+        return response()->json(['data' => $post->load('author:id,name')]);
     }
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'content_type' => 'required|in:berita,pengumuman,kegiatan_akademik,kegiatan_mahasiswa,prestasi_kampus,prestasi_dosen,prestasi_mahasiswa',
-            'category' => 'nullable|string|max:80',
-            'category_color' => 'nullable|string|max:20',
-            'tags' => 'nullable|array',
-            'tags.*' => 'string|max:40',
-            'title' => 'required|string|max:250',
-            'slug' => [
-                'required', 'string', 'max:250', 'alpha_dash',
-                Rule::unique('posts')->where(fn ($q) => $q->where('content_type', $request->input('content_type'))),
-            ],
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'nullable|string',
-            'featured_image_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/|\/)/'],
-            'related_program_id' => 'nullable|exists:programs,id',
-            'related_lecturer_id' => 'nullable|exists:lecturers,id',
-            'priority' => 'nullable|in:normal,penting',
-            'competition_level' => 'nullable|in:kampus,regional,nasional,internasional',
-            'achievement_year' => 'nullable|digits:4',
-            'read_time_minutes' => 'nullable|integer|min:1|max:120',
-            'event_date' => 'nullable|date',
-            'is_featured' => 'boolean',
-            'status' => 'required|in:draft,published,archived',
-        ]);
+        $data = $request->validate($this->rules($request, isUpdate: false));
+
+        // Fallback pertahanan berlapis: kalau frontend entah bagaimana tidak
+        // mengirim slug (bug seperti yang pernah terjadi sebelumnya), generate
+        // otomatis dari title alih-alih menolak request dengan 422. Tetap pastikan
+        // unik per content_type.
+        if (empty($data['slug'])) {
+            $data['slug'] = $this->generateUniqueSlug($data['title'], $data['content_type']);
+        }
 
         $data['author_id'] = $request->user()->id;
         if ($data['status'] === 'published') {
@@ -58,14 +72,7 @@ class PostController extends Controller
     {
         $this->authorizePostOwner($request, $post);
 
-        $data = $request->validate([
-            'title' => 'sometimes|string|max:250',
-            'excerpt' => 'nullable|string|max:500',
-            'content' => 'nullable|string',
-            'featured_image_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/|\/)/'],
-            'status' => 'sometimes|in:draft,published,archived',
-            'is_featured' => 'boolean',
-        ]);
+        $data = $request->validate($this->rules($request, isUpdate: true, post: $post));
 
         if (($data['status'] ?? null) === 'published' && $post->status !== 'published') {
             $data['published_at'] = now();
@@ -83,6 +90,62 @@ class PostController extends Controller
         $post->delete();
 
         return response()->json(['message' => 'Post dihapus.']);
+    }
+
+    /**
+     * Rule validasi dipakai bersama store() & update() -- sebelumnya update() cuma
+     * menerima title/excerpt/content/featured_image_url/status/is_featured, jadi
+     * field lain (category, slug, related_program_id, dst) diam-diam tidak pernah
+     * tersimpan saat admin mengedit post yang sudah ada.
+     */
+    private function rules(Request $request, bool $isUpdate, ?Post $post = null): array
+    {
+        $req = $isUpdate ? 'sometimes' : 'required';
+        $contentType = $request->input('content_type', $post?->content_type);
+
+        return [
+            'content_type' => "{$req}|in:".implode(',', self::CONTENT_TYPES),
+            'category' => 'nullable|string|max:80',
+            'category_color' => 'nullable|string|max:20',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:40',
+            'title' => "{$req}|string|max:250",
+            'slug' => [
+                'nullable', 'string', 'max:250', 'alpha_dash',
+                Rule::unique('posts')
+                    ->where(fn ($q) => $q->where('content_type', $contentType))
+                    ->ignore($post?->id),
+            ],
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'nullable|string',
+            'featured_image_url' => ['nullable', 'max:500', 'regex:/^(https?:\/\/|\/)/'],
+            'related_program_id' => 'nullable|exists:programs,id',
+            'related_lecturer_id' => 'nullable|exists:lecturers,id',
+            'priority' => 'nullable|in:normal,penting',
+            'competition_level' => 'nullable|in:kampus,regional,nasional,internasional',
+            'achievement_year' => 'nullable|digits:4',
+            'read_time_minutes' => 'nullable|integer|min:1|max:120',
+            'event_date' => 'nullable|date',
+            'deadline' => 'nullable|date',
+            'credited_name' => 'nullable|string|max:150',
+            'credited_program_text' => 'nullable|string|max:150',
+            'credited_initials' => 'nullable|string|max:5',
+            'is_featured' => 'boolean',
+            'status' => "{$req}|in:draft,published,archived",
+        ];
+    }
+
+    private function generateUniqueSlug(string $title, string $contentType): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $i = 1;
+        while (Post::where('content_type', $contentType)->where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+
+        return $slug;
     }
 
     private function authorizePostOwner(Request $request, Post $post): void

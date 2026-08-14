@@ -49,6 +49,10 @@ return new class extends Migration
             $table->index(['content_type', 'status', 'published_at'], 'idx_posts_listing');
             $table->index('is_featured', 'idx_posts_featured');
             $table->index('related_program_id', 'idx_posts_program');
+            // Dipakai AdminPostController::index() -- sort default "terakhir diubah"
+            // di listing admin panel. Tanpa index ini, sort jadi filesort penuh
+            // tabel saat data sudah banyak.
+            $table->index('updated_at', 'idx_posts_updated_at');
         });
     }
 
