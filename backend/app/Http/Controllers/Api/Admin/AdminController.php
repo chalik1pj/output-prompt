@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Semua route di sini dilindungi 'auth:sanctum' + 'admin.role:super_admin'.
- */
 class AdminController extends Controller
 {
     public function index()

@@ -6,9 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Batasi route ke role admin tertentu. Pakai sebagai `->middleware('admin.role:super_admin')`.
- */
 class EnsureAdminRole
 {
     public function handle(Request $request, Closure $next, string ...$roles): Response

@@ -43,8 +43,6 @@ class DashboardController extends Controller
         ]);
     }
 
-    // GET /api/admin/dashboard/trend -- jumlah post dipublikasikan per hari, 14 hari
-    // terakhir. Dipakai chart tren di dashboard (tema SaaS statistik).
     public function trend()
     {
         $days = collect(range(13, 0))->map(fn ($i) => now()->subDays($i)->toDateString());

@@ -6,9 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Menambahkan header keamanan standar ke semua response API.
- */
 class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response

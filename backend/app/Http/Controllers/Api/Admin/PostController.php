@@ -20,8 +20,6 @@ class PostController extends Controller
     {
         $query = Post::query()->with('author:id,name')->latest('updated_at');
 
-        // Filter berdasarkan content_type -- dipakai dropdown filter di
-        // pages/admin-panel/post/page.tsx.
         if ($request->filled('type')) {
             $query->where('content_type', $request->string('type'));
         }
@@ -30,8 +28,6 @@ class PostController extends Controller
             $query->where('status', $request->string('status'));
         }
 
-        // Pencarian server-side (judul), dipanggil dengan debounce di frontend
-        // (hooks/use-debounce.ts) supaya tidak query setiap keystroke.
         if ($request->filled('search')) {
             $query->where('title', 'like', '%'.$request->string('search').'%');
         }
@@ -50,10 +46,6 @@ class PostController extends Controller
     {
         $data = $request->validate($this->rules($request, isUpdate: false));
 
-        // Fallback pertahanan berlapis: kalau frontend entah bagaimana tidak
-        // mengirim slug (bug seperti yang pernah terjadi sebelumnya), generate
-        // otomatis dari title alih-alih menolak request dengan 422. Tetap pastikan
-        // unik per content_type.
         if (empty($data['slug'])) {
             $data['slug'] = $this->generateUniqueSlug($data['title'], $data['content_type']);
         }
@@ -92,12 +84,6 @@ class PostController extends Controller
         return response()->json(['message' => 'Post dihapus.']);
     }
 
-    /**
-     * Rule validasi dipakai bersama store() & update() -- sebelumnya update() cuma
-     * menerima title/excerpt/content/featured_image_url/status/is_featured, jadi
-     * field lain (category, slug, related_program_id, dst) diam-diam tidak pernah
-     * tersimpan saat admin mengedit post yang sudah ada.
-     */
     private function rules(Request $request, bool $isUpdate, ?Post $post = null): array
     {
         $req = $isUpdate ? 'sometimes' : 'required';

@@ -46,7 +46,6 @@ class Post extends Model
         'published_at' => 'datetime',
     ];
 
-    // content_type groupings used by the "Informasi" nav section on the site
     public const NEWS_TYPES = ['berita', 'pengumuman', 'kegiatan_akademik', 'kegiatan_mahasiswa'];
     public const ACHIEVEMENT_TYPES = ['prestasi_kampus', 'prestasi_dosen', 'prestasi_mahasiswa'];
 

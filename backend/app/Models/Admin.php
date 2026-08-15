@@ -24,10 +24,6 @@ class Admin extends Authenticatable
         'password_hash',
     ];
 
-    /**
-     * Laravel's Authenticatable expects a `password` attribute for guards;
-     * this maps it to the `password_hash` column used in the given schema.
-     */
     public function getAuthPassword(): string
     {
         return $this->password_hash;
