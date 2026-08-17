@@ -35,7 +35,6 @@ export default function PertukaranMahasiswaPage() {
         breadcrumb={<Breadcrumb items={breadcrumbItems} />}
       />
 
-      {/* Daftar program -- database-driven & berpaginasi */}
       <section className="mx-content py-12">
         <SectionHeading eyebrow="Program Tersedia" title="Pilihan Program Pertukaran & Mobilitas" />
 

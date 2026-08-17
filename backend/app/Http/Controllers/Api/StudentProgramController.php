@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class StudentProgramController extends Controller
 {
-    // GET /api/student-programs?type=beasiswa|pertukaran&per_page=6&page=1
     public function index(Request $request)
     {
         $request->validate([
@@ -23,8 +22,6 @@ class StudentProgramController extends Controller
             $query->where('program_type', $request->string('type'));
         }
 
-        // paginate() (bukan get()) -- dibutuhkan untuk UI pagination di frontend
-        // (lihat pages/students/beasiswa.tsx & pertukaran.tsx).
         return response()->json(
             $query->paginate($request->integer('per_page', 6))
         );

@@ -102,9 +102,8 @@ export function TestimonialsSection() {
                     setDir(i > index ? 1 : -1)
                     setIndex(i)
                   }}
-                  className={`h-2 rounded-full transition-all ${
-                    i === index ? 'w-6 bg-primary' : 'w-2 bg-border'
-                  }`}
+                  className={`h-2 rounded-full transition-all ${i === index ? 'w-6 bg-primary' : 'w-2 bg-border'
+                    }`}
                 />
               ))}
             </div>

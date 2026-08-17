@@ -9,12 +9,6 @@ interface ListParams {
   [key: string]: string | number | undefined
 }
 
-/**
- * Factory hook CRUD generik. `resource` = path API (mis. 'admin/posts').
- * `queryKey` dipakai React Query untuk caching -- request yang sama (params sama)
- * dalam 30 detik terakhir TIDAK di-fetch ulang (lihat staleTime di main.tsx), ini
- * yang paling terasa mempercepat navigasi bolak-balik antar halaman admin.
- */
 export function useAdminList<T>(resource: string, queryKey: string, params: ListParams) {
   return useQuery({
     queryKey: [queryKey, 'list', params],
@@ -22,9 +16,6 @@ export function useAdminList<T>(resource: string, queryKey: string, params: List
       const res = await api.get<PaginatedResult<T>>(`/${resource}`, { params })
       return res.data
     },
-    // keepPreviousData -> saat pindah halaman/filter, tabel lama tetap tampil
-    // (tidak nge-blank ke skeleton) sampai data baru datang -- terasa jauh lebih
-    // responsif dibanding blocking "Memuat..." di setiap perubahan filter.
     placeholderData: keepPreviousData,
   })
 }
@@ -93,7 +84,6 @@ export function useAdminDelete(resource: string, queryKey: string, successMessag
   })
 }
 
-/** Ekstrak pesan error Laravel (422 validation / 403 / 500) jadi teks yang jelas. */
 export function extractErrorMessage(err: any): string {
   const data = err?.response?.data
   if (data?.errors) {

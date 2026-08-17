@@ -46,7 +46,6 @@ export function ProgramsSection() {
           ))}
         </div>
 
-        {/* D3 & S2 Programs — separate sub-section */}
         {additionalPrograms.length > 0 && (
           <div className="mt-16">
             <SectionHeading

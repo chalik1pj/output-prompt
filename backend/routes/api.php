@@ -15,11 +15,6 @@ use App\Http\Controllers\Api\SiteWidgetController;
 use App\Http\Controllers\Api\StudentProgramController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Public API (dikonsumsi oleh frontend React)
-|--------------------------------------------------------------------------
-*/
 Route::get('/programs', [ProgramController::class, 'index']);
 Route::get('/programs/{slug}', [ProgramController::class, 'show']);
 
@@ -32,11 +27,6 @@ Route::get('/lecturers/{lecturer}', [LecturerController::class, 'show']);
 Route::get('/widgets', [SiteWidgetController::class, 'index']);
 Route::get('/student-programs', [StudentProgramController::class, 'index']);
 
-/*
-|--------------------------------------------------------------------------
-| Admin API (CMS) - dilindungi Sanctum
-|--------------------------------------------------------------------------
-*/
 Route::post('/admin/login', [AdminAuthController::class, 'login'])
     ->middleware('throttle:5,1');
 

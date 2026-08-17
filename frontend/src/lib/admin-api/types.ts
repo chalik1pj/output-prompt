@@ -1,8 +1,3 @@
-// Tipe data admin -- SATU sumber kebenaran, dicocokkan persis dengan $fillable /
-// validasi tiap model Laravel (app/Models/*.php, app/Http/Controllers/Api/Admin/*.php).
-// Kalau field di sini beda dari backend, form admin akan diam-diam gagal menyimpan --
-// itulah akar sebagian besar bug "lambat/tidak stabil" yang ditemukan sebelumnya.
-
 export interface PaginatedResult<T> {
   data: T[]
   current_page: number

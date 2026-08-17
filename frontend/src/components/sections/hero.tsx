@@ -19,7 +19,6 @@ const item = {
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null)
-  // Parallax: background moves slower than the page as you scroll.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
@@ -31,7 +30,6 @@ export function Hero() {
       ref={ref}
       className="relative flex min-h-[92vh] items-center overflow-hidden pt-28 pb-16 sm:pt-32 lg:pt-36"
     >
-      {/* Full-bleed background image with parallax + cinematic zoom-in */}
       <motion.div
         style={{ y: bgY }}
         className="absolute left-0 right-0 top-0 z-0 h-[122%] w-full"
@@ -49,8 +47,6 @@ export function Hero() {
           />
         </motion.div>
       </motion.div>
-
-      {/* Gradient overlays for text contrast (dark bottom-left -> transparent) */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-tr from-[#0b1120] via-[#0b1120]/80 to-[#0b1120]/20" />
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#0b1120]/50 via-transparent to-[#0b1120]/75" />
 
@@ -103,7 +99,6 @@ export function Hero() {
             </GradientButton>
           </motion.div>
 
-          {/* Floating glass stat cards */}
           <motion.div
             variants={item}
             className="mt-12 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3"
@@ -138,8 +133,6 @@ export function Hero() {
           </motion.div>
         </motion.div>
       </div>
-
-      {/* subtle bottom fade into page background */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-24 bg-gradient-to-b from-transparent to-background" />
     </section>
   )

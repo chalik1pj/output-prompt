@@ -16,7 +16,6 @@ export function PartnersSection() {
 
   if (partners.length === 0) return null
 
-  // duplicate the list for a seamless marquee
   const row = [...partners, ...partners]
 
   return (

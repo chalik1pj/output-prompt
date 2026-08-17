@@ -23,10 +23,6 @@ interface PaginatedResponse<T> {
   per_page: number
 }
 
-/**
- * Fetch paginated `student_programs` (GET /api/student-programs?type=beasiswa|pertukaran).
- * Dipakai di pages/students/beasiswa.tsx & pertukaran.tsx.
- */
 export function usePaginatedStudentPrograms(type: 'beasiswa' | 'pertukaran', perPage = 6) {
   const [items, setItems] = useState<StudentProgramItem[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)

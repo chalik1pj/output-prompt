@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-/** Delay update value sampai user berhenti mengetik selama `delay` ms. */
 export function useDebounce<T>(value: T, delay = 400): T {
   const [debounced, setDebounced] = useState(value)
 

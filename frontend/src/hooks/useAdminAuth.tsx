@@ -29,13 +29,6 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   })
   const [token, setToken] = useState<string | null>(() => sessionStorage.getItem('admin_token'))
 
-  // BUG YANG DIPERBAIKI: sebelumnya, admin/role yang tersimpan di sessionStorage
-  // langsung dipercaya begitu saja setiap kali halaman di-reload -- tidak pernah
-  // divalidasi ulang ke server. Kalau token sudah kedaluwarsa/dicabut, atau role
-  // admin baru saja diubah oleh super_admin lain, UI tetap menampilkan data LAMA
-  // (mis. sidebar "Kelola Admin" tetap muncul walau role sudah diturunkan jadi
-  // editor) sampai ada request lain yang kebetulan gagal dengan 401. Sekarang
-  // divalidasi eksplisit lewat GET /admin/me setiap kali provider ini mount.
   const [isLoading, setIsLoading] = useState(() => !!sessionStorage.getItem('admin_token'))
 
   useEffect(() => {
@@ -81,7 +74,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = async () => {
-    await api.post('/admin/logout').catch(() => {})
+    await api.post('/admin/logout').catch(() => { })
     setAdmin(null)
     setToken(null)
     sessionStorage.removeItem('admin_token')

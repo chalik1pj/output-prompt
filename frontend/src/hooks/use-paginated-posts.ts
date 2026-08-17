@@ -16,11 +16,6 @@ interface PaginatedResponse<T> {
   per_page: number
 }
 
-/**
- * Fetch paginated `posts` dari backend (GET /api/posts?type=...&category=...&page=...).
- * Dipakai di semua halaman kegiatan/prestasi/berita/pengumuman (7 dari 9 halaman yang
- * butuh pagination -- 2 sisanya, beasiswa & pertukaran, pakai use-paginated-student-programs).
- */
 export function usePaginatedPosts<T = any>({ type, category, perPage = 9 }: UsePaginatedPostsOptions) {
   const [items, setItems] = useState<T[]>([])
   const [meta, setMeta] = useState<PaginationMeta | null>(null)

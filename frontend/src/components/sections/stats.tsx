@@ -24,7 +24,6 @@ export function StatsSection() {
     <section className="relative py-16 sm:py-20">
       <div className="mx-content">
         <div className="relative overflow-hidden rounded-[2rem] border border-border bg-gradient-to-br from-primary to-accent p-8 shadow-2xl shadow-primary/20 sm:p-12">
-          {/* decorative grid glow */}
           <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-white/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-white/10 blur-3xl" />
 
