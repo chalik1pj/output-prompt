@@ -24,7 +24,10 @@ class ProgramController extends Controller
     public function show(string $slug)
     {
         $program = Program::published()
-            ->with(['lecturers' => fn ($q) => $q->orderBy('name')])
+            // Batasi kolom dosen yang ikut ter-eager-load -- sebelumnya
+            // memuat SEMUA kolom termasuk `email`, bocor ke publik lewat
+            // halaman detail program studi.
+            ->with(['lecturers' => fn ($q) => $q->orderBy('name')->select('id', 'program_id', 'name', 'position', 'photo_url', 'bio', 'is_certified')])
             ->where('slug', $slug)
             ->firstOrFail();
 
