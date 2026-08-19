@@ -36,7 +36,6 @@ export default function BeasiswaPage() {
         breadcrumb={<Breadcrumb items={breadcrumbItems} />}
       />
 
-      {/* Daftar beasiswa -- database-driven & berpaginasi */}
       <section className="mx-content py-12">
         <SectionHeading eyebrow="Program Tersedia" title="Pilihan Beasiswa STIKOM Tunas Bangsa" />
 
