@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@stikomtb.ac.id"
+                placeholder="Masukkan Email"
                 className="form-input !pl-10"
               />
             </div>
@@ -82,7 +82,7 @@ export default function AdminLoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Masukkan Pasword"
                 className="form-input !pl-10"
               />
             </div>
