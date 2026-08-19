@@ -14,7 +14,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <PartnersSection />
       <AboutSection />
       <ProgramsSection />
       <WhyChooseSection />
@@ -24,6 +23,7 @@ export default function HomePage() {
       <InformatiosSection />
       <TestimonialsSection />
       <CtaSection />
+      <PartnersSection />
     </>
   )
 }
