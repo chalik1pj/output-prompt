@@ -39,13 +39,15 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/dashboard/trend', [AdminDashboardController::class, 'trend']);
 
     Route::apiResource('posts', AdminPostController::class);
-    Route::apiResource('programs', AdminProgramController::class)->except('destroy');
+    Route::apiResource('programs', AdminProgramController::class)
+        ->except('destroy')
+        ->scoped(['program' => 'id']);
     Route::apiResource('lecturers', AdminLecturerController::class);
     Route::apiResource('widgets', AdminSiteWidgetController::class);
     Route::apiResource('student-programs', AdminStudentProgramController::class);
 
     Route::middleware('admin.role:super_admin')->group(function () {
         Route::apiResource('admins', AdminController::class)->except(['show']);
-        Route::delete('/programs/{program}', [AdminProgramController::class, 'destroy']);
+        Route::delete('/programs/{program:id}', [AdminProgramController::class, 'destroy']);
     });
 });
