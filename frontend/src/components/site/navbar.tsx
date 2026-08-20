@@ -7,6 +7,7 @@ import { Logo } from '@/components/site/logo'
 import { NavDropdown } from '@/components/site/nav-dropdown'
 import { NavDropdownAkademik } from '@/components/site/nav-dropdown-akademik'
 import { NavMobileItem } from '@/components/site/nav-mobile-item'
+import { SiteSearch } from '@/components/site/site-search'
 import { ThemeToggle } from '@/components/site/theme-toggle'
 import { navLinks } from '@/lib/site'
 import { cn } from '@/lib/utils'
@@ -148,7 +149,7 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Search bar */}
+      {/* Search bar (desktop) */}
       <AnimatePresence>
         {searchOpen ? (
           <motion.div
@@ -157,17 +158,13 @@ export function Navbar() {
             exit={{ opacity: 0, y: -8 }}
             className="absolute top-full left-0 right-0 mt-2 hidden justify-center lg:flex"
           >
-            <div className="glass-strong flex w-[calc(100%-14rem)] items-center gap-3 rounded-2xl px-4 py-3 shadow-lg">
-              <Search className="size-4 text-muted-foreground" />
-              <input
+            <div className="w-[calc(100%-14rem)]">
+              <SiteSearch
                 autoFocus
-                type="search"
-                placeholder="Cari program, berita, dan lainnya…"
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                boxClassName="glass-strong shadow-lg"
+                onNavigate={() => setSearchOpen(false)}
+                onClose={() => setSearchOpen(false)}
               />
-              <kbd className="hidden rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground sm:inline">
-                ESC
-              </kbd>
             </div>
           </motion.div>
         ) : null}
@@ -183,6 +180,12 @@ export function Navbar() {
             className="absolute top-full left-0 right-0 mt-2 flex justify-center lg:hidden"
           >
             <div className="glass-strong flex max-h-[calc(100dvh-6rem)] w-[calc(100%-2.5rem)] flex-col gap-1 overflow-y-auto overscroll-contain rounded-2xl p-3 shadow-xl sm:w-[calc(100%-6rem)]">
+              <SiteSearch
+                boxClassName="bg-secondary/60"
+                onNavigate={() => setOpen(false)}
+                onClose={() => setOpen(false)}
+              />
+              <div className="my-1 border-t border-border" />
               {navLinks.map((link) => (
                 <NavMobileItem
                   key={link.href}
