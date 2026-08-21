@@ -1,17 +1,8 @@
-/**
- * Indeks pencarian statis seluruh halaman & konten tetap situs (BUKAN dari API/database
- * -- sesuai permintaan, murni client-side). Dikurasi manual dari router.tsx supaya semua
- * link di sini benar-benar terdaftar (beberapa item submenu di lib/site.ts sengaja
- * dilewati karena mengarah ke halaman yang belum dibuat, mis. /programs/regulation,
- * #anchor, atau link eksternal PMB).
- */
-
 export interface SearchItem {
   label: string
   href: string
   category: string
   description?: string
-  /** Kata kunci tambahan yang tidak muncul di label, membantu pencarian sinonim. */
   keywords?: string[]
 }
 
@@ -56,7 +47,6 @@ export const searchIndex: SearchItem[] = [
   { label: 'Kontak', href: '/contact', category: 'Lainnya', keywords: ['hubungi', 'whatsapp', 'email', 'alamat'] },
 ]
 
-/** Cocokkan query terhadap label, deskripsi, kategori, dan keywords -- case-insensitive. */
 export function searchSite(query: string, limit = 8): SearchItem[] {
   const q = query.trim().toLowerCase()
   if (!q) return []
@@ -69,7 +59,6 @@ export function searchSite(query: string, limit = 8): SearchItem[] {
 
       if (!haystacks.includes(q)) return null
 
-      // Skor sederhana: match di awal label > match di label > match di kata kunci/lainnya.
       let score = 3
       if (item.label.toLowerCase() === q) score = 0
       else if (item.label.toLowerCase().startsWith(q)) score = 1

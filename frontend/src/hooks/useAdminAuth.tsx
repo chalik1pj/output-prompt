@@ -46,15 +46,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         sessionStorage.setItem('admin_user', JSON.stringify(freshUser))
       })
       .catch(() => {
-        // Token tidak valid lagi -- bersihkan state lokal. Interceptor 401 di
-        // lib/api.ts juga akan redirect, ini jaga-jaga di level context.
         setAdmin(null)
         setToken(null)
         sessionStorage.removeItem('admin_token')
         sessionStorage.removeItem('admin_user')
       })
       .finally(() => setIsLoading(false))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const login = async (email: string, password: string) => {
@@ -79,9 +76,6 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     setToken(null)
     sessionStorage.removeItem('admin_token')
     sessionStorage.removeItem('admin_user')
-    // Bersihkan cache React Query -- tanpa ini, kalau admin lain login di
-    // browser/tab yang sama, sisa data cache milik sesi sebelumnya (posts,
-    // stats dashboard, dst) bisa sempat tampil sebelum re-fetch selesai.
     queryClient.clear()
   }
 
