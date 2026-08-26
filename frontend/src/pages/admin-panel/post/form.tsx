@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import { ArrowLeft, Eye, Pencil, Save } from 'lucide-react'
 import { GlassCard } from '@/components/site/glass-card'
 import { FormCheckbox, FormInput, FormSelect, FormTextarea, slugify } from '@/components/site/form-fields'
+import { ImageUploadInput } from '@/components/admin/image-upload-input'
 import { useAdminDetail, useAdminCreate, useAdminUpdate } from '@/lib/admin-api/use-admin-resource'
 import type { AdminPost, ContentType } from '@/lib/admin-api/types'
 
@@ -367,17 +368,13 @@ export default function PostFormPage() {
               onChange={(e) => update('category', e.target.value)}
               placeholder="Acara, Kemitraan, Penelitian, ..."
             />
-            <FormInput
+            <ImageUploadInput
               label="URL Gambar Utama"
               value={form.featured_image_url}
-              onChange={(e) => update('featured_image_url', e.target.value)}
+              onChange={(val) => update('featured_image_url', val)}
               placeholder="/images/news-1.png atau https://..."
+              required
             />
-            {form.featured_image_url && (
-              <div className="overflow-hidden rounded-xl border border-border">
-                <img src={form.featured_image_url} alt="Preview" className="aspect-video w-full object-cover" />
-              </div>
-            )}
             <FormInput
               label="Estimasi Waktu Baca (menit)"
               type="number"

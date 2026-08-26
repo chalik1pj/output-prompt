@@ -5,6 +5,7 @@ import { Pagination } from '@/components/site/pagination'
 import { TableShell } from '@/components/site/table-shell'
 import { useConfirm } from '@/components/site/confirm-dialog'
 import { FormCheckbox, FormInput, FormSelect, FormTextarea } from '@/components/site/form-fields'
+import { ImageUploadInput } from '@/components/admin/image-upload-input'
 import { useDebounce } from '@/hooks/use-debounce'
 import api from '@/lib/api'
 import {
@@ -194,7 +195,7 @@ export default function LecturerListPage() {
                 ))}
               </FormSelect>
               <FormInput label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-              <FormInput label="URL Foto" value={form.photo_url} onChange={(e) => setForm({ ...form, photo_url: e.target.value })} placeholder="/images/... atau https://..." />
+              <ImageUploadInput label="URL Foto" value={form.photo_url} onChange={(val) => setForm({ ...form, photo_url: val })} placeholder="/images/... atau https://..." />
               <FormTextarea label="Biografi Singkat" rows={3} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
               <FormCheckbox id="is_certified" label="Dosen bersertifikat" checked={form.is_certified} onChange={(v) => setForm({ ...form, is_certified: v })} />
             </div>

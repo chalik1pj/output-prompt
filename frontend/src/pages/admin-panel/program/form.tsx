@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom'
 import { ArrowLeft, Plus, Save, X } from 'lucide-react'
 import { GlassCard } from '@/components/site/glass-card'
 import { FormCheckbox, FormInput, FormSelect, FormTextarea, slugify } from '@/components/site/form-fields'
+import { ImageUploadInput } from '@/components/admin/image-upload-input'
 import { useAdminDetail, useAdminCreate, useAdminUpdate } from '@/lib/admin-api/use-admin-resource'
 import type { AdminProgram } from '@/lib/admin-api/types'
 
@@ -272,12 +273,7 @@ export default function ProgramFormPage() {
           <GlassCard className="space-y-4 p-6">
             <h2 className="font-display text-sm font-bold">Media & Metadata</h2>
             <FormInput label="Akreditasi" value={form.accreditation} onChange={(e) => update('accreditation', e.target.value)} />
-            <FormInput label="URL Gambar Kartu" value={form.card_image_url} onChange={(e) => update('card_image_url', e.target.value)} placeholder="/images/program-xxx.png" />
-            {form.card_image_url && (
-              <div className="overflow-hidden rounded-xl border border-border">
-                <img src={form.card_image_url} alt="Preview" className="aspect-video w-full object-cover" />
-              </div>
-            )}
+            <ImageUploadInput label="URL Gambar Kartu" value={form.card_image_url} onChange={(val) => update('card_image_url', val)} placeholder="/images/program-xxx.png" />
             <FormInput label="Nama Ikon (Lucide)" value={form.icon_name} onChange={(e) => update('icon_name', e.target.value)} placeholder="code, database, cpu, ..." />
           </GlassCard>
         </div>

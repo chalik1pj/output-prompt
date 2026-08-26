@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/dashboard/recent-posts', [AdminDashboardController::class, 'recentPosts']);
     Route::get('/dashboard/trend', [AdminDashboardController::class, 'trend']);
 
+    Route::post('/media/upload', [\App\Http\Controllers\Api\Admin\MediaController::class, 'upload']);
+
     Route::apiResource('posts', AdminPostController::class);
     Route::apiResource('programs', AdminProgramController::class)
         ->except('destroy')

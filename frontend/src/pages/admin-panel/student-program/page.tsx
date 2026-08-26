@@ -4,6 +4,7 @@ import { GlassCard } from '@/components/site/glass-card'
 import { TableShell } from '@/components/site/table-shell'
 import { useConfirm } from '@/components/site/confirm-dialog'
 import { FormInput, FormTextarea } from '@/components/site/form-fields'
+import { ImageUploadInput } from '@/components/admin/image-upload-input'
 import {
   useAdminList,
   useAdminCreate,
@@ -176,7 +177,7 @@ export default function StudentProgramListPage() {
               )}
               <FormTextarea label="Persyaratan (satu baris = satu syarat)" rows={4} value={form.requirements} onChange={(e) => setForm({ ...form, requirements: e.target.value })} hint="Tiap baris baru akan ditampilkan sebagai poin terpisah di halaman publik." />
               <FormTextarea label="Cara Mendaftar" rows={2} value={form.how_to_apply} onChange={(e) => setForm({ ...form, how_to_apply: e.target.value })} />
-              <FormInput label="URL Logo" value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} />
+              <ImageUploadInput label="URL Logo" value={form.logo_url} onChange={(val) => setForm({ ...form, logo_url: val })} />
               <FormInput label="Urutan Tampil" type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} />
             </div>
             <div className="mt-6 flex justify-end gap-3">

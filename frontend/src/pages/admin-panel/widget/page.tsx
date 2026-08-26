@@ -4,6 +4,7 @@ import { GlassCard } from '@/components/site/glass-card'
 import { TableShell } from '@/components/site/table-shell'
 import { useConfirm } from '@/components/site/confirm-dialog'
 import { FormInput, FormTextarea } from '@/components/site/form-fields'
+import { ImageUploadInput } from '@/components/admin/image-upload-input'
 import {
   useAdminList,
   useAdminCreate,
@@ -177,19 +178,19 @@ export default function WidgetListPage() {
                 <>
                   <FormInput label="Peran / Jabatan" value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} placeholder="Software Engineer · Alumni '22" />
                   <FormTextarea label="Kutipan Testimoni" rows={3} value={form.quote} onChange={(e) => setForm({ ...form, quote: e.target.value })} />
-                  <FormInput label="URL Foto" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+                  <ImageUploadInput label="URL Foto" value={form.image_url} onChange={(val) => setForm({ ...form, image_url: val })} />
                 </>
               )}
 
               {activeTab === 'partner' && (
                 <>
-                  <FormInput label="URL Logo" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+                  <ImageUploadInput label="URL Logo" value={form.image_url} onChange={(val) => setForm({ ...form, image_url: val })} />
                   <FormInput label="URL Tautan (opsional)" value={form.link_url} onChange={(e) => setForm({ ...form, link_url: e.target.value })} />
                 </>
               )}
 
               {activeTab === 'gallery_image' && (
-                <FormInput label="URL Foto" required value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="/images/gallery-xxx.png" />
+                <ImageUploadInput label="URL Foto" required value={form.image_url} onChange={(val) => setForm({ ...form, image_url: val })} placeholder="/images/gallery-xxx.png" />
               )}
 
               <FormInput label="Urutan Tampil" type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} />
