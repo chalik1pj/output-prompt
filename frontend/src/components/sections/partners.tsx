@@ -5,6 +5,8 @@ import api from '@/lib/api'
 interface PartnerWidget {
   id: number
   title: string
+  image_url?: string | null
+  link_url?: string | null
 }
 
 export function PartnersSection() {
@@ -29,19 +31,58 @@ export function PartnersSection() {
 
         <div className="group relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
           <div className="flex w-max animate-[marquee_32s_linear_infinite] items-center gap-4 group-hover:[animation-play-state:paused]">
-            {row.map((p, i) => (
-              <div
-                key={`${p.title}-${i}`}
-                className="flex h-16 min-w-[180px] items-center justify-center gap-2.5 rounded-2xl border border-border bg-card px-6"
-              >
-                <span className="inline-flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-xs font-bold text-primary-foreground">
-                  {p.title.charAt(0)}
-                </span>
-                <span className="font-display text-base font-semibold tracking-tight text-foreground/80">
-                  {p.title}
-                </span>
-              </div>
-            ))}
+            {row.map((p, i) => {
+              const CardContent = (
+                <>
+                  {p.image_url && (
+                    <img
+                      src={p.image_url}
+                      alt={p.title}
+                      className="max-h-8 max-w-[120px] object-contain"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none'
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement
+                        if (fallback) fallback.style.display = 'inline-flex'
+                      }}
+                    />
+                  )}
+                  <span
+                    className="inline-flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-xs font-bold text-primary-foreground"
+                    style={{ display: p.image_url ? 'none' : 'inline-flex' }}
+                  >
+                    {p.title.charAt(0)}
+                  </span>
+                  <span className="font-display text-base font-semibold tracking-tight text-foreground/80">
+                    {p.title}
+                  </span>
+                </>
+              )
+
+              const wrapperClass = "flex h-16 min-w-[180px] items-center justify-center gap-2.5 rounded-2xl border border-border bg-card px-6 hover:bg-muted/50 transition-colors"
+
+              if (p.link_url) {
+                return (
+                  <a
+                    key={`${p.title}-${i}`}
+                    href={p.link_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={wrapperClass}
+                  >
+                    {CardContent}
+                  </a>
+                )
+              }
+
+              return (
+                <div
+                  key={`${p.title}-${i}`}
+                  className={wrapperClass}
+                >
+                  {CardContent}
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>

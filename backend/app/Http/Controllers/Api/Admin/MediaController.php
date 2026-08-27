@@ -60,6 +60,8 @@ class MediaController extends Controller
             imagedestroy($image);
         } else {
             // Fallback if conversion fails
+            $filename = str_replace('.webp', '.' . $extension, $filename);
+            $targetPath = $targetDir . '/' . $filename;
             copy($imagePath, $targetPath);
         }
 

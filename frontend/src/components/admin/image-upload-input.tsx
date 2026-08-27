@@ -89,7 +89,7 @@ export function ImageUploadInput({ label, value, onChange, placeholder, required
           ) : value ? (
             <div className="w-full relative z-20 group">
               <img
-                src={value.startsWith('http') ? value : `http://localhost:8000${value}`}
+                src={value}
                 alt="Preview"
                 className="max-h-[200px] mx-auto rounded object-contain"
               />
