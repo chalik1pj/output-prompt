@@ -108,7 +108,7 @@ export function ImageUploadInput({ label, value, onChange, placeholder, required
                 Klik atau drag file gambar ke sini
               </p>
               <p className="text-xs mt-1">
-                PNG, JPG, WEBP maks 5MB
+                PNG, JPG, WEBP maks 1MB
               </p>
             </div>
           )}

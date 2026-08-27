@@ -11,25 +11,21 @@ class MediaController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:1024',
         ]);
 
         $file = $request->file('image');
         $filename = 'img_' . time() . '_' . Str::random(5) . '.webp';
-        
-        // Target directory in the frontend codebase
         $targetDir = base_path('../frontend/public/images');
-        
+
         if (!file_exists($targetDir)) {
             mkdir($targetDir, 0755, true);
         }
-        
+
         $targetPath = $targetDir . '/' . $filename;
-        
-        // Convert to webp using GD
         $extension = strtolower($file->getClientOriginalExtension());
         $imagePath = $file->getRealPath();
-        
+
         $image = null;
         switch ($extension) {
             case 'jpeg':
@@ -54,7 +50,7 @@ class MediaController extends Controller
                     'url' => '/images/' . $filename
                 ]);
         }
-        
+
         if ($image) {
             imagewebp($image, $targetPath, 85);
             imagedestroy($image);
