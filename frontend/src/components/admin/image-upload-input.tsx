@@ -24,8 +24,8 @@ export function ImageUploadInput({ label, value, onChange, placeholder, required
       return
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError('Ukuran maksimal gambar adalah 5MB')
+    if (file.size > 1 * 1024 * 1024) {
+      setError('Ukuran maksimal gambar adalah 1MB')
       return
     }
 
