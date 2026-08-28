@@ -119,7 +119,6 @@ export function ImageUploadInput({ label, value, onChange, placeholder, required
         <p className="text-sm text-red-500 mt-1">{error}</p>
       )}
 
-      {/* Fallback manual input just in case they still need to input external URL */}
       <div className="flex items-center gap-2 mt-2">
         <ImageIcon className="w-4 h-4 text-slate-400" />
         <input

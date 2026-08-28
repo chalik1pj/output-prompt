@@ -44,7 +44,6 @@ class MediaController extends Controller
                 $image = @imagecreatefromgif($imagePath);
                 break;
             case 'webp':
-                // Just move the file if it's already webp
                 copy($imagePath, $targetPath);
                 return response()->json([
                     'url' => '/images/' . $filename
@@ -55,7 +54,6 @@ class MediaController extends Controller
             imagewebp($image, $targetPath, 85);
             imagedestroy($image);
         } else {
-            // Fallback if conversion fails
             $filename = str_replace('.webp', '.' . $extension, $filename);
             $targetPath = $targetDir . '/' . $filename;
             copy($imagePath, $targetPath);
