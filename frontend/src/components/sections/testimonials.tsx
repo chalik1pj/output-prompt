@@ -68,7 +68,7 @@ export function TestimonialsSection() {
                   <footer className="mt-6 flex items-center gap-3">
                     <span className="relative inline-flex size-12 shrink-0 overflow-hidden rounded-full ring-2 ring-primary/30">
                       <img
-                        src={active.image_url || '/images/avatar-rani.png'}
+                        src={active.image_url || '/images/avatar-rani.webp'}
                         alt={`Foto ${active.title}`}
                         className="size-full object-cover"
                       />

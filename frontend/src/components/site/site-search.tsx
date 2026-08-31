@@ -4,23 +4,14 @@ import { useNavigate } from 'react-router-dom'
 import { searchSite } from '@/lib/search-index'
 
 interface SiteSearchProps {
-  /** Dipanggil setelah navigasi (mis. untuk menutup dropdown/menu pemanggil). */
   onNavigate?: () => void
-  /** Dipanggil saat user menekan Escape. */
   onClose?: () => void
   autoFocus?: boolean
   placeholder?: string
   className?: string
-  /** Kelas tambahan untuk kotak input (mis. "glass-strong shadow-lg" di dropdown desktop). */
   boxClassName?: string
 }
 
-/**
- * Pencarian situs sepenuhnya client-side -- mencocokkan query terhadap
- * lib/search-index.ts (daftar statis halaman & konten tetap), TIDAK memanggil API
- * backend sama sekali. Dipakai di dua tempat: dropdown search desktop (navbar.tsx)
- * dan menu mobile (hamburger) supaya pencarian tetap tersedia di layar kecil.
- */
 export function SiteSearch({ onNavigate, onClose, autoFocus, placeholder, className, boxClassName }: SiteSearchProps) {
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
@@ -99,9 +90,8 @@ export function SiteSearch({ onNavigate, onClose, autoFocus, placeholder, classN
                     type="button"
                     onClick={() => goTo(item.href)}
                     onMouseEnter={() => setActiveIndex(i)}
-                    className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors ${
-                      i === activeIndex ? 'bg-secondary' : 'hover:bg-secondary/60'
-                    }`}
+                    className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors ${i === activeIndex ? 'bg-secondary' : 'hover:bg-secondary/60'
+                      }`}
                   >
                     <span>
                       <span className="block text-sm font-medium text-foreground">{item.label}</span>

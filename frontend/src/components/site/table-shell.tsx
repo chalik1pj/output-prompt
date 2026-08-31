@@ -11,12 +11,6 @@ interface TableShellProps {
   children: ReactNode
 }
 
-/**
- * Bungkus <table> dengan skeleton shimmer saat loading (bukan teks "Memuat...").
- * Skeleton mempertahankan tinggi & struktur tabel supaya tidak ada layout-shift
- * saat data datang -- ini yang bikin UI terasa jauh lebih stabil/cepat walau
- * request-nya sendiri butuh waktu sama.
- */
 export function TableShell({
   loading,
   isEmpty,

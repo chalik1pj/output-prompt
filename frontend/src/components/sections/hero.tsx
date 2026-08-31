@@ -41,7 +41,7 @@ export function Hero() {
           className="relative h-full w-full"
         >
           <img
-            src="/images/hero-campus-wide.png"
+            src="/images/hero-campus-wide.webp"
             alt="Kampus teknologi STIKOM Tunas Bangsa yang megah saat blue hour"
             className="size-full object-cover object-center"
           />

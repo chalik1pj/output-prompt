@@ -22,7 +22,7 @@ export function WhyChooseSection() {
               >
                 <div className="relative h-36 overflow-hidden bg-secondary">
                   <img
-                    src={feature.image || '/images/gallery-campus.png'}
+                    src={feature.image || '/images/gallery-campus.webp'}
                     alt=""
                     className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />

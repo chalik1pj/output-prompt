@@ -190,7 +190,7 @@ export default function WidgetListPage() {
               )}
 
               {activeTab === 'gallery_image' && (
-                <ImageUploadInput label="URL Foto" required value={form.image_url} onChange={(val) => setForm({ ...form, image_url: val })} placeholder="/images/gallery-xxx.png" />
+                <ImageUploadInput label="URL Foto" required value={form.image_url} onChange={(val) => setForm({ ...form, image_url: val })} placeholder="/images/gallery-xxx.webp" />
               )}
 
               <FormInput label="Urutan Tampil" type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} />

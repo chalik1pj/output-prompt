@@ -39,7 +39,7 @@ export function ListingCard({ item }: { item: ListingCardItem }) {
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
         <img
-          src={item.featured_image_url || '/images/news-1.png'}
+          src={item.featured_image_url || '/images/news-1.webp'}
           alt={item.title}
           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

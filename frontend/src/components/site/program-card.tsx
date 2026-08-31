@@ -13,7 +13,7 @@ function degreeBadgeClass(degree: string) {
 export function ProgramCard({ program }: { program: any }) {
   const title = program.title || program.name
   const slug = program.slug
-  const image = program.image || program.card_image_url || '/images/hero-campus.png'
+  const image = program.image || program.card_image_url || '/images/hero-campus.webp'
   const degree = program.degree || program.degree_level || 'S1'
   const description = program.description || program.short_description
   const highlights = program.highlights || program.competencies || []

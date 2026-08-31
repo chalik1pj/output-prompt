@@ -32,11 +32,6 @@ export type StepItem = {
   description: string
 }
 
-/**
- * Komponen "proses 4 langkah" yang dipakai berulang (Admissions, Pertukaran
- * Mahasiswa, Beasiswa) untuk konsistensi visual. Port dari
- * 08-referensi-source-asli/components/site/steps-process.tsx.
- */
 export function StepsProcess({
   eyebrow,
   title,

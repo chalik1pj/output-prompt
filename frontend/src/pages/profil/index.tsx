@@ -61,7 +61,7 @@ export default function ProfilPage() {
         <Reveal>
           <div className="relative aspect-[16/7] overflow-hidden rounded-3xl border border-border/60">
             <img
-              src="/images/profil-campus.png"
+              src="/images/profil-campus.webp"
               alt="Pintu masuk kampus STIKOM Tunas Bangsa"
               className="size-full object-cover"
             />

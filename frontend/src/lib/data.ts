@@ -29,42 +29,42 @@ export const features: Feature[] = [
     title: "Program Terakreditasi",
     description:
       "Gelar terakreditasi BAN-PT yang diakui secara nasional dan memenuhi standar akademik dan industri yang ketat.",
-    image: "/images/gallery-graduation.png",
+    image: "/images/gallery-graduation.webp",
   },
   {
     icon: BriefcaseBusiness,
     title: "Kemitraan Industri",
     description:
       "Kolaborasi mendalam dengan perusahaan teknologi terkemuka untuk magang, proyek nyata, dan mentoring terjamin.",
-    image: "/images/news-2.png",
+    image: "/images/news-2.webp",
   },
   {
     icon: FlaskConical,
     title: "Laboratorium Modern",
     description:
       "Lab AI, networking, IoT, dan keamanan siber terkini dilengkapi dengan peralatan tingkat enterprise.",
-    image: "/images/gallery-lab.png",
+    image: "/images/gallery-lab.webp",
   },
   {
     icon: GraduationCap,
     title: "Dosen Bersertifikat",
     description:
       "Belajar dari pendidik bersertifikat dan praktisi yang membawa pengalaman rekayasa dunia nyata ke kelas.",
-    image: "/images/gallery-lecture.png",
+    image: "/images/gallery-lecture.webp",
   },
   {
     icon: Globe2,
     title: "Kolaborasi Internasional",
     description:
       "Program pertukaran global, penelitian bersama, dan sertifikasi yang diakui di seluruh dunia.",
-    image: "/images/profil-campus.png",
+    image: "/images/profil-campus.webp",
   },
   {
     icon: Network,
     title: "Tingkat Kelulusan Tinggi",
     description:
       "94% lulusan kami bekerja atau membangun startup dalam enam bulan setelah kelulusan.",
-    image: "/images/gallery-students.png",
+    image: "/images/gallery-students.webp",
   },
 ];
 
@@ -191,24 +191,24 @@ export const achievements: Achievement[] = [
 
 export const galleryImages = [
   {
-    src: "/images/gallery-lab.png",
+    src: "/images/gallery-lab.webp",
     alt: "Modern computer laboratory",
     span: "row-span-2",
   },
   {
-    src: "/images/gallery-students.png",
+    src: "/images/gallery-students.webp",
     alt: "Students collaborating",
     span: "",
   },
-  { src: "/images/gallery-library.png", alt: "University library", span: "" },
+  { src: "/images/gallery-library.webp", alt: "University library", span: "" },
   {
-    src: "/images/gallery-campus.png",
+    src: "/images/gallery-campus.webp",
     alt: "Campus aerial view",
     span: "row-span-2",
   },
-  { src: "/images/gallery-lecture.png", alt: "Lecture hall", span: "" },
+  { src: "/images/gallery-lecture.webp", alt: "Lecture hall", span: "" },
   {
-    src: "/images/gallery-graduation.png",
+    src: "/images/gallery-graduation.webp",
     alt: "Graduation ceremony",
     span: "",
   },

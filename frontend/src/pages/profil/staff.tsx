@@ -11,7 +11,7 @@ export default function StaffPage() {
   useEffect(() => {
     api.get('/lecturers').then((res) => {
       setLecturers(res.data.data || [])
-    }).catch(() => {})
+    }).catch(() => { })
   }, [])
 
   return (
@@ -29,7 +29,7 @@ export default function StaffPage() {
             <Reveal key={lec.id || lec.nidn} delay={i * 0.05}>
               <GlassCard className="flex flex-col items-center text-center p-6 space-y-4 h-full">
                 <img
-                  src={lec.photo_url || lec.photo || '/images/avatar-budi.png'}
+                  src={lec.photo_url || lec.photo || '/images/avatar-budi.webp'}
                   alt={lec.name}
                   className="size-24 rounded-full object-cover border-2 border-primary/20"
                 />

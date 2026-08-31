@@ -273,7 +273,7 @@ export default function ProgramFormPage() {
           <GlassCard className="space-y-4 p-6">
             <h2 className="font-display text-sm font-bold">Media & Metadata</h2>
             <FormInput label="Akreditasi" value={form.accreditation} onChange={(e) => update('accreditation', e.target.value)} />
-            <ImageUploadInput label="URL Gambar Kartu" value={form.card_image_url} onChange={(val) => update('card_image_url', val)} placeholder="/images/program-xxx.png" />
+            <ImageUploadInput label="URL Gambar Kartu" value={form.card_image_url} onChange={(val) => update('card_image_url', val)} placeholder="/images/program-xxx.webp" />
             <FormInput label="Nama Ikon (Lucide)" value={form.icon_name} onChange={(e) => update('icon_name', e.target.value)} placeholder="code, database, cpu, ..." />
           </GlassCard>
         </div>

@@ -130,8 +130,8 @@ export default function SejarahPage() {
         <SectionHeading eyebrow="Galeri" title="Kenangan & Momen Penting" />
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {[
-            { src: '/images/gallery-graduation.png', alt: 'Wisuda STIKOM Tunas Bangsa', caption: 'Hari wisuda — melepas lulusan siap berkarya' },
-            { src: '/images/profil-campus.png', alt: 'Kampus STIKOM Tunas Bangsa', caption: 'Kampus STIKOM Tunas Bangsa di Pematangsiantar' },
+            { src: '/images/gallery-graduation.webp', alt: 'Wisuda STIKOM Tunas Bangsa', caption: 'Hari wisuda — melepas lulusan siap berkarya' },
+            { src: '/images/profil-campus.webp', alt: 'Kampus STIKOM Tunas Bangsa', caption: 'Kampus STIKOM Tunas Bangsa di Pematangsiantar' },
           ].map((img, i) => (
             <Reveal key={img.src} delay={i * 0.05}>
               <div className="group overflow-hidden rounded-2xl border border-border/60">

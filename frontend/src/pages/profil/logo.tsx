@@ -46,7 +46,7 @@ const dontsRules = [
   'Menempatkan logo di atas background dengan kontras rendah.',
 ]
 
-const downloadFormats = ['PNG (Transparan)', 'SVG (Vektor)', 'PDF (Cetak)']
+const downloadFormats = ['webp (Transparan)', 'SVG (Vektor)', 'PDF (Cetak)']
 
 const breadcrumbItems = [
   { label: 'Beranda', href: '/' },
@@ -80,7 +80,7 @@ export default function LogoPage() {
                 <div className={`flex items-center justify-center ${v.bgClass} p-10`}>
                   <div className="relative h-24 w-24">
                     <img
-                      src="/images/stikom-emblem.png"
+                      src="/images/stikom-emblem.webp"
                       alt={v.title}
                       className={`size-full object-contain ${v.imgClass}`}
                     />

@@ -9,9 +9,7 @@ interface StatCardProps {
   icon: LucideIcon
   accent?: 'primary' | 'accent' | 'success' | 'warning'
   suffix?: string
-  /** Teks kecil di bawah angka, mis. "12 draft menunggu" */
   hint?: string
-  /** Persentase perubahan opsional (mis. dibanding total post lain) */
   trend?: { value: number; label: string }
   loading?: boolean
 }
@@ -56,9 +54,8 @@ export function StatCard({
 
       {trend && !loading && (
         <div
-          className={`mt-2 inline-flex items-center gap-1 text-xs font-semibold ${
-            trend.value >= 0 ? 'text-success' : 'text-destructive'
-          }`}
+          className={`mt-2 inline-flex items-center gap-1 text-xs font-semibold ${trend.value >= 0 ? 'text-success' : 'text-destructive'
+            }`}
         >
           {trend.value >= 0 ? <TrendingUp className="size-3.5" /> : <TrendingDown className="size-3.5" />}
           {Math.abs(trend.value)}% {trend.label}
