@@ -82,8 +82,8 @@ export default function PostListPage() {
       </div>
 
       {/* Filters */}
-      <GlassCard className="flex flex-col items-stretch gap-3 p-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
+      <GlassCard className="grid grid-cols-1 items-stretch gap-3 p-4 sm:grid-cols-5 sm:items-center">
+        <div className="relative sm:col-span-3">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
@@ -93,7 +93,7 @@ export default function PostListPage() {
               setSearchInput(e.target.value)
               setPage(1)
             }}
-            className="form-input !pl-9 text-sm"
+            className="form-input w-full !pl-9 text-sm"
           />
           {isFetching && !isLoading && (
             <div className="absolute right-3 top-1/2 size-3.5 -translate-y-1/2 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -106,7 +106,7 @@ export default function PostListPage() {
             setType(e.target.value)
             setPage(1)
           }}
-          className="form-input w-full text-sm sm:w-56"
+          className="form-input w-full text-sm sm:col-span-1"
         >
           {CONTENT_TYPES.map((t) => (
             <option key={t.value} value={t.value}>
@@ -121,7 +121,7 @@ export default function PostListPage() {
             setStatus(e.target.value)
             setPage(1)
           }}
-          className="form-input w-full text-sm sm:w-40"
+          className="form-input w-full text-sm sm:col-span-1"
         >
           <option value="">Semua Status</option>
           <option value="draft">Draft</option>

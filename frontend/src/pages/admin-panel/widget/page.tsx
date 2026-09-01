@@ -158,7 +158,7 @@ export default function WidgetListPage() {
 
       {modalOpen && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
-          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md max-h-[90vh] overflow-y-auto scrollbar-none rounded-2xl border border-border bg-card p-6 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-display text-lg font-bold">{editing ? 'Edit' : 'Tambah'} {TABS.find((t) => t.type === activeTab)?.label}</h2>
               <button onClick={() => setModalOpen(false)}><X className="size-5" /></button>

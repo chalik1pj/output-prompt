@@ -153,16 +153,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'rlig' 1, 'calt' 1;
   }
+
   html {
     scroll-behavior: smooth;
   }
 }
 
 @layer utilities {
+
   /* Reusable gradient text */
   .text-gradient {
     @apply bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent;
@@ -175,6 +178,7 @@
     backdrop-filter: blur(16px);
     border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
   }
+
   .glass-strong {
     background: color-mix(in oklab, var(--card) 82%, transparent);
     -webkit-backdrop-filter: blur(20px);
@@ -200,9 +204,11 @@
     color: var(--foreground);
     transition: border-color 0.2s, box-shadow 0.2s;
   }
+
   .form-input::placeholder {
     color: color-mix(in oklab, var(--muted-foreground) 90%, transparent);
   }
+
   .form-input:focus {
     outline: none;
     border-color: var(--ring);
@@ -212,6 +218,7 @@
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
+
   .animate-float-slow {
     animation: float 9s ease-in-out infinite;
   }
@@ -221,12 +228,14 @@
     margin-left: 1.25rem;
     margin-right: 1.25rem;
   }
+
   @media (min-width: 768px) {
     .mx-content {
       margin-left: 3rem;
       margin-right: 3rem;
     }
   }
+
   @media (min-width: 1280px) {
     .mx-content {
       margin-left: 7rem;
@@ -234,13 +243,12 @@
     }
   }
 
-  /*
-   * Navbar hover indicator: a 2px underline bar, NOT a pill/box highlight.
-   */
+  /* Navbar hover indicator */
   .nav-underline {
     position: relative;
     display: inline-block;
   }
+
   .nav-underline::after {
     content: '';
     position: absolute;
@@ -254,12 +262,14 @@
     transform-origin: right center;
     transition: transform 250ms ease-out;
   }
+
   .nav-item:hover .nav-underline::after,
   .nav-item:focus-visible .nav-underline::after,
   .nav-item[data-open='true'] .nav-underline::after {
     transform: scaleX(1);
     transform-origin: left center;
   }
+
   .nav-item[data-active='true'] .nav-underline::after {
     transform: scaleX(1);
     transform-origin: left center;
@@ -269,19 +279,23 @@
   .animate-orb-1 {
     animation: orb-drift-1 20s ease-in-out infinite;
   }
+
   .animate-orb-2 {
     animation: orb-drift-2 26s ease-in-out infinite;
   }
+
   .animate-orb-3 {
     animation: orb-drift-3 18s ease-in-out infinite;
   }
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-14px);
   }
@@ -289,32 +303,64 @@
 
 /* PageHeader orb drift animations */
 @keyframes orb-drift-1 {
-  0%   { transform: translate(0px, 0px) scale(1); }
-  33%  { transform: translate(28px, -18px) scale(1.04); }
-  66%  { transform: translate(-18px, 22px) scale(0.97); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(28px, -18px) scale(1.04);
+  }
+
+  66% {
+    transform: translate(-18px, 22px) scale(0.97);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
 }
 
 @keyframes orb-drift-2 {
-  0%   { transform: translate(0px, 0px) scale(1); }
-  33%  { transform: translate(-32px, 16px) scale(0.96); }
-  66%  { transform: translate(20px, -24px) scale(1.05); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  33% {
+    transform: translate(-32px, 16px) scale(0.96);
+  }
+
+  66% {
+    transform: translate(20px, -24px) scale(1.05);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
 }
 
 @keyframes orb-drift-3 {
-  0%   { transform: translate(0px, 0px) scale(1); }
-  50%  { transform: translate(22px, 14px) scale(1.03); }
-  100% { transform: translate(0px, 0px) scale(1); }
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  50% {
+    transform: translate(22px, 14px) scale(1.03);
+  }
+
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
 }
 
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
+
   .animate-orb-1,
   .animate-orb-2,
   .animate-orb-3 {
     animation: none;
   }
+
   .nav-underline::after {
     transition: none;
   }
@@ -324,6 +370,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
