@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (will be installed inside containers)
+frontend/node_modules
+backend/vendor
+
+# IDE & editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Agent / AI files
+.agents
+.claude
+skills-lock.json
+PROMPT-EKSEKUSI.md
+
+# Documentation source (not needed in production images)
+docs-structure
+docs-rev
+
+# Build artifacts (will be rebuilt inside containers)
+frontend/dist
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Docker & env files
+docker-compose.override.yml
+.env.production
+
+# Logs
+*.log

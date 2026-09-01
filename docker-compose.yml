@@ -1,0 +1,134 @@
+# ============================================================
+# Docker Compose — STIKOM Tunas Bangsa
+# ============================================================
+# Services:
+#   app      - PHP-FPM (Laravel backend)
+#   nginx    - Reverse proxy + static file server
+#   mysql    - Database
+#   frontend - One-shot build container (builds React SPA)
+#   certbot  - SSL certificate management (Let's Encrypt)
+#
+# Usage:
+#   docker compose up -d              # Start semua services
+#   docker compose logs -f app        # Lihat log backend
+#   docker compose exec app php artisan migrate  # Jalankan migration
+# ============================================================
+
+services:
+  # ── PHP-FPM (Laravel Backend) ──────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: production
+    container_name: stikomtb-app
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    volumes:
+      - backend-storage:/var/www/backend/storage
+      - php-logs:/var/log/php
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    env_file:
+      - .env.production
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - stikomtb-net
+
+  # ── Nginx (Reverse Proxy + Static Server) ──────────────────
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: stikomtb-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - frontend-dist:/var/www/frontend:ro
+      - backend-storage:/var/www/backend/storage:ro
+      - certbot-www:/var/www/certbot:ro
+      - certbot-conf:/etc/letsencrypt:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - app
+      - frontend
+    networks:
+      - stikomtb-net
+
+  # ── MySQL Database ─────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: stikomtb-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
+      MYSQL_DATABASE: ${DB_DATABASE:-stikomtb-main}
+      MYSQL_USER: ${DB_USERNAME:-stikomtb}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-secret}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - stikomtb-net
+
+  # ── Frontend Builder (one-shot) ────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/node/Dockerfile
+      target: production
+      args:
+        VITE_API_BASE_URL: /api
+        VITE_APP_NAME: "STIKOM Tunas Bangsa"
+    container_name: stikomtb-frontend-build
+    volumes:
+      - frontend-dist:/output
+
+  # ── Certbot (SSL Certificate Manager) ─────────────────────
+  certbot:
+    image: certbot/certbot:latest
+    container_name: stikomtb-certbot
+    volumes:
+      - certbot-www:/var/www/certbot
+      - certbot-conf:/etc/letsencrypt
+    # Certbot hanya dijalankan secara manual atau via cron:
+    #   docker compose run --rm certbot certonly --webroot -w /var/www/certbot \
+    #     -d stikomtunasbangsa.ac.id -d www.stikomtunasbangsa.ac.id \
+    #     --email admin@stikomtunasbangsa.ac.id --agree-tos --no-eff-email
+    #
+    # Untuk renew:
+    #   docker compose run --rm certbot renew
+    entrypoint: "/bin/sh -c 'echo \"Certbot ready. Run certonly or renew manually.\" && exit 0'"
+
+# ── Volumes ──────────────────────────────────────────────────
+volumes:
+  mysql-data:
+    driver: local
+  backend-storage:
+    driver: local
+  frontend-dist:
+    driver: local
+  certbot-www:
+    driver: local
+  certbot-conf:
+    driver: local
+  php-logs:
+    driver: local
+  nginx-logs:
+    driver: local
+
+# ── Network ──────────────────────────────────────────────────
+networks:
+  stikomtb-net:
+    driver: bridge
