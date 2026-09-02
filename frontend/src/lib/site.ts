@@ -79,3 +79,22 @@ export const navLinks: NavLink[] = [
   },
   { label: 'Kontak', href: '/contact' },
 ]
+
+export type IntegratedApp = {
+  name: string
+  href: string
+  initial: string
+  color: string
+}
+
+export const integratedApps: IntegratedApp[] = [
+  { name: 'SIAKAD', href: '#', initial: 'a', color: '#2563eb' },
+  { name: 'SEPAKAT', href: '#', initial: 'p', color: '#0891b2' },
+  { name: 'Digilib', href: '#', initial: 'd', color: '#16a34a' },
+  { name: 'Tracer', href: '#', initial: 't', color: '#1e293b' },
+  { name: 'E-Skripsi', href: '#', initial: 's', color: '#dc2626' },
+  { name: 'E-Learning', href: '#', initial: 'b', color: '#15803d' },
+  { name: 'SIMASIN', href: '#', initial: '#', color: '#334155' },
+  { name: 'E-Konseling', href: '#', initial: '+', color: '#0284c7' },
+  { name: 'SKPI', href: '#', initial: 'i', color: '#991b1b' },
+]

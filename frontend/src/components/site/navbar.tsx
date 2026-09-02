@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, Search, X } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { AppLauncher } from '@/components/site/app-launcher'
 import { GradientButton } from '@/components/site/gradient-button'
 import { Logo } from '@/components/site/logo'
 import { NavDropdown } from '@/components/site/nav-dropdown'
@@ -120,6 +121,8 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <AppLauncher />
+
           <button
             type="button"
             aria-label="Cari"
