@@ -121,7 +121,7 @@ Browser → Nginx (:443)
 | ---------- | ------------------- | --------------------- | ----------------------------- |
 | `nginx`    | `nginx:1.27-alpine` | 80, 443               | Reverse proxy, SSL, serve SPA |
 | `app`      | Custom PHP 8.2 FPM  | 9000 (internal)       | Laravel API backend           |
-| `mysql`    | `mysql:8.0`         | 3306 (localhost only) | Database                      |
+| `mysql`    | `mysql:8.2`         | 3306 (localhost only) | Database                      |
 | `frontend` | Custom Node 20      | —                     | Build SPA (one-shot, exit)    |
 | `certbot`  | `certbot/certbot`   | —                     | Kelola SSL certificate        |
 
