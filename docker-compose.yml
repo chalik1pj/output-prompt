@@ -44,8 +44,7 @@ services:
     container_name: stikomtb-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "8800:80"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - frontend-dist:/var/www/frontend:ro

@@ -64,7 +64,7 @@ bash scripts/deploy.sh
 | ------------- | ---------------------------------------------------------- |
 | **Frontend**  | React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion |
 | **Backend**   | Laravel 11, PHP 8.2, Sanctum (API auth)                    |
-| **Database**  | MySQL 8.0                                                  |
+| **Database**  | MySQL 8.2                                                  |
 | **Server**    | Nginx (reverse proxy + static files)                       |
 | **Container** | Docker, Docker Compose                                     |
 | **SSL**       | Let's Encrypt (Certbot)                                    |
