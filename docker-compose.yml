@@ -15,7 +15,6 @@
 # ============================================================
 
 services:
-  # ── PHP-FPM (Laravel Backend) ──────────────────────────────
   app:
     build:
       context: .
@@ -38,7 +37,6 @@ services:
     networks:
       - stikomtb-net
 
-  # ── Nginx (Reverse Proxy + Static Server) ──────────────────
   nginx:
     image: nginx:1.27-alpine
     container_name: stikomtb-nginx
@@ -56,7 +54,6 @@ services:
     networks:
       - stikomtb-net
 
-  # ── MySQL Database ─────────────────────────────────────────
   mysql:
     image: mysql:8.2
     container_name: stikomtb-mysql
@@ -79,7 +76,6 @@ services:
     networks:
       - stikomtb-net
 
-  # ── Frontend Builder (one-shot) ────────────────────────────
   frontend:
     build:
       context: .
@@ -92,8 +88,6 @@ services:
     volumes:
       - frontend-dist:/output
 
-
-# ── Volumes ──────────────────────────────────────────────────
 volumes:
   mysql-data:
     driver: local
@@ -106,7 +100,6 @@ volumes:
   nginx-logs:
     driver: local
 
-# ── Network ──────────────────────────────────────────────────
 networks:
   stikomtb-net:
     driver: bridge
