@@ -2,7 +2,7 @@
 
 Website resmi **STIKOM Tunas Bangsa** (Pematangsiantar) — dibangun dengan React + Laravel.
 
-**URL Produksi**: [https://stikomtunasbangsa.ac.id](https://stikomtunasbangsa.ac.id)
+**URL Produksi**: [https://stikomtunasbangsa.ac.id/v2](https://stikomtunasbangsa.ac.id/v2)
 
 ---
 
@@ -11,7 +11,7 @@ Website resmi **STIKOM Tunas Bangsa** (Pematangsiantar) — dibangun dengan Reac
 | Dokumen                               | Deskripsi                                             |
 | ------------------------------------- | ----------------------------------------------------- |
 | [Arsitektur Sistem](arsitektur.md)    | Stack teknologi, diagram arsitektur, alur request     |
-| [Panduan Deployment](deployment.md)   | Setup server Ubuntu, Docker, SSL, dan cara deploy     |
+| [Panduan Deployment](deployment.md)   | Setup server Ubuntu, Docker, dan cara deploy          |
 | [Panduan Development](development.md) | Setup development lokal, tanpa Docker & dengan Docker |
 | [API Reference](api-reference.md)     | Semua endpoint REST API backend (publik & admin)      |
 | [Database](database.md)               | Skema database, ERD, penjelasan tabel & relasi        |
@@ -65,9 +65,9 @@ bash scripts/deploy.sh
 | **Frontend**  | React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion |
 | **Backend**   | Laravel 11, PHP 8.2, Sanctum (API auth)                    |
 | **Database**  | MySQL 8.2                                                  |
-| **Server**    | Nginx (reverse proxy + static files)                       |
+| **Server**    | Nginx (reverse proxy + static files), port 8800            |
 | **Container** | Docker, Docker Compose                                     |
-| **SSL**       | Let's Encrypt (Certbot)                                    |
+| **SSL**       | Ditangani oleh reverse proxy utama                         |
 
 ---
 

@@ -2,7 +2,7 @@
 
 Referensi lengkap REST API backend STIKOM Tunas Bangsa.
 
-**Base URL**: `https://stikomtunasbangsa.ac.id/api`
+**Base URL**: `https://stikomtunasbangsa.ac.id/v2/api`
 
 ---
 

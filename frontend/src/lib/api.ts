@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
@@ -24,7 +24,8 @@ api.interceptors.response.use(
       sessionStorage.removeItem("admin_token");
       sessionStorage.removeItem("admin_user");
       if (!window.location.pathname.includes("/admin-panel/login")) {
-        window.location.href = "/admin-panel/login";
+        const base = import.meta.env.BASE_URL || "/";
+        window.location.href = `${base}admin-panel/login`;
       }
     }
     return Promise.reject(err);

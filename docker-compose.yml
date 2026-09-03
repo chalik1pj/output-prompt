@@ -49,8 +49,6 @@ services:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       - frontend-dist:/var/www/frontend:ro
       - backend-storage:/var/www/backend/storage:ro
-      - certbot-www:/var/www/certbot:ro
-      - certbot-conf:/etc/letsencrypt:ro
       - nginx-logs:/var/log/nginx
     depends_on:
       - app
@@ -88,27 +86,12 @@ services:
       dockerfile: docker/node/Dockerfile
       target: production
       args:
-        VITE_API_BASE_URL: /api
+        VITE_API_BASE_URL: /v2/api
         VITE_APP_NAME: "STIKOM Tunas Bangsa"
     container_name: stikomtb-frontend-build
     volumes:
       - frontend-dist:/output
 
-  # ── Certbot (SSL Certificate Manager) ─────────────────────
-  certbot:
-    image: certbot/certbot:latest
-    container_name: stikomtb-certbot
-    volumes:
-      - certbot-www:/var/www/certbot
-      - certbot-conf:/etc/letsencrypt
-    # Certbot hanya dijalankan secara manual atau via cron:
-    #   docker compose run --rm certbot certonly --webroot -w /var/www/certbot \
-    #     -d stikomtunasbangsa.ac.id -d www.stikomtunasbangsa.ac.id \
-    #     --email admin@stikomtunasbangsa.ac.id --agree-tos --no-eff-email
-    #
-    # Untuk renew:
-    #   docker compose run --rm certbot renew
-    entrypoint: "/bin/sh -c 'echo \"Certbot ready. Run certonly or renew manually.\" && exit 0'"
 
 # ── Volumes ──────────────────────────────────────────────────
 volumes:
@@ -117,10 +100,6 @@ volumes:
   backend-storage:
     driver: local
   frontend-dist:
-    driver: local
-  certbot-www:
-    driver: local
-  certbot-conf:
     driver: local
   php-logs:
     driver: local

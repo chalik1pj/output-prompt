@@ -2,6 +2,21 @@
 
 Panduan lengkap deploy aplikasi STIKOM Tunas Bangsa ke server Ubuntu menggunakan Docker.
 
+> **Catatan**: Aplikasi ini di-deploy di subpath `/v2` (`https://stikomtunasbangsa.ac.id/v2`).
+> SSL/HTTPS ditangani oleh reverse proxy utama server. Docker Nginx hanya listen di port `8800` (HTTP).
+
+---
+
+## Arsitektur Deployment
+
+```
+Internet → Reverse Proxy Utama (SSL, :443)
+         → /v2/* → Docker Nginx (:8800)
+                  → /v2/api/* → PHP-FPM (Laravel)
+                  → /v2/*     → Frontend SPA (React)
+                  → MySQL (internal)
+```
+
 ---
 
 ## Persyaratan Server
@@ -12,9 +27,11 @@ Panduan lengkap deploy aplikasi STIKOM Tunas Bangsa ke server Ubuntu menggunakan
 | **RAM** | 2 GB | 4 GB |
 | **Disk** | 20 GB | 40 GB SSD |
 | **CPU** | 1 vCPU | 2 vCPU |
-| **Network** | Port 22, 80, 443 terbuka | — |
+| **Network** | Port 22, 8800 terbuka | — |
 
-Pastikan domain `stikomtunasbangsa.ac.id` sudah mengarah ke IP server.
+**Prasyarat:**
+- Reverse proxy utama (Nginx/Apache/Caddy) sudah dikonfigurasi di server untuk menangani SSL dan meneruskan `/v2` ke `localhost:8800`
+- Domain `stikomtunasbangsa.ac.id` sudah mengarah ke IP server
 
 ---
 
@@ -28,34 +45,40 @@ ssh root@<IP_SERVER>
 
 ### 1.2 Jalankan Setup Script
 
-Script ini menginstall Docker, konfigurasi firewall, dan membuat user deploy.
-
 ```bash
-# Download atau clone repository dulu
 git clone <REPO_URL> /tmp/stikomtb
-
-# Jalankan setup
 bash /tmp/stikomtb/scripts/setup-server.sh
 ```
 
 Script akan melakukan:
 - ✅ Update sistem & install dependensi
 - ✅ Install Docker Engine + Docker Compose plugin
-- ✅ Konfigurasi firewall (UFW): SSH, HTTP, HTTPS
+- ✅ Konfigurasi firewall (UFW)
 - ✅ Buat user `deploy` dengan akses Docker
 - ✅ Buat direktori `/var/www/stikomtb`
 - ✅ Setup Docker log rotation
 
-### 1.3 Setup SSH Key untuk User Deploy
+### 1.3 Konfigurasi Reverse Proxy Utama
 
-```bash
-# Di server (sebagai root)
-su - deploy
-mkdir -p ~/.ssh
-nano ~/.ssh/authorized_keys
-# Paste public key Anda
-chmod 600 ~/.ssh/authorized_keys
-chmod 700 ~/.ssh
+Tambahkan konfigurasi di reverse proxy utama server untuk meneruskan `/v2` ke Docker Nginx:
+
+**Contoh Nginx (reverse proxy utama):**
+```nginx
+location /v2 {
+    proxy_pass http://127.0.0.1:8800;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_buffering off;
+    client_max_body_size 12M;
+}
+```
+
+**Contoh Apache:**
+```apache
+ProxyPass /v2 http://127.0.0.1:8800/v2
+ProxyPassReverse /v2 http://127.0.0.1:8800/v2
 ```
 
 ---
@@ -85,8 +108,6 @@ nano .env.production
 | `DB_PASSWORD` | `p@ssw0rd_kuat_123` | Password MySQL user |
 | `DB_ROOT_PASSWORD` | `r00t_kuat_456` | Password MySQL root |
 | `MAIL_HOST` | `smtp.gmail.com` | SMTP server (opsional) |
-| `MAIL_USERNAME` | `user@gmail.com` | SMTP username (opsional) |
-| `MAIL_PASSWORD` | `app_password` | SMTP password (opsional) |
 
 > ⚠️ **PENTING**: Gunakan password yang kuat! Jangan gunakan password default.
 
@@ -94,15 +115,10 @@ nano .env.production
 
 ## Langkah 3: Deploy Pertama Kali
 
-### 3.1 Build & Start (tanpa SSL dulu)
-
-Pertama kali deploy, kita harus start tanpa SSL karena Certbot perlu Nginx running untuk verifikasi domain.
+### 3.1 Build & Start
 
 ```bash
-# Gunakan config HTTP-only dulu
-cp docker/nginx/default-http-only.conf docker/nginx/default.conf
-
-# Build dan start
+# Build dan start semua containers
 docker compose build --parallel
 docker compose up -d
 
@@ -129,57 +145,17 @@ docker compose exec -T app php artisan view:cache
 docker compose exec -T app php artisan storage:link
 ```
 
-### 3.2 Verifikasi HTTP
-
-Buka `http://stikomtunasbangsa.ac.id` di browser — harus bisa muncul tampilan website.
-
-### 3.3 Setup SSL (Let's Encrypt)
+### 3.2 Verifikasi
 
 ```bash
-# Dapatkan sertifikat SSL
-docker compose run --rm certbot certonly \
-    --webroot \
-    -w /var/www/certbot \
-    -d stikomtunasbangsa.ac.id \
-    -d www.stikomtunasbangsa.ac.id \
-    --email admin@stikomtunasbangsa.ac.id \
-    --agree-tos \
-    --no-eff-email
-```
+# Cek semua container running
+docker compose ps
 
-Jika berhasil, output akan menunjukkan path sertifikat:
-```
-Certificate is saved at: /etc/letsencrypt/live/stikomtunasbangsa.ac.id/fullchain.pem
-Key is saved at:         /etc/letsencrypt/live/stikomtunasbangsa.ac.id/privkey.pem
-```
+# Test langsung ke Docker Nginx
+curl -I http://localhost:8800/v2
 
-### 3.4 Aktifkan HTTPS
-
-```bash
-# Backup config HTTP-only
-cp docker/nginx/default.conf docker/nginx/default-http-only.conf.bak
-
-# Copy config HTTPS (yang asli dari repo)
-git checkout docker/nginx/default.conf
-
-# Restart Nginx
-docker compose restart nginx
-```
-
-### 3.5 Verifikasi HTTPS
-
-Buka `https://stikomtunasbangsa.ac.id` — harus redirect dari HTTP ke HTTPS dengan gembok hijau.
-
-### 3.6 Setup Auto-Renew SSL
-
-Sertifikat Let's Encrypt berlaku 90 hari. Setup cron untuk auto-renew:
-
-```bash
-# Edit crontab
-crontab -e
-
-# Tambahkan baris ini (renew setiap Minggu jam 03:00):
-0 3 * * 0 cd /var/www/stikomtb && docker compose run --rm certbot renew && docker compose exec nginx nginx -s reload >> /var/log/certbot-renew.log 2>&1
+# Test melalui domain (setelah reverse proxy dikonfigurasi)
+curl -I https://stikomtunasbangsa.ac.id/v2
 ```
 
 ---
@@ -226,9 +202,6 @@ bash scripts/deploy.sh --skip-build
 
 # Deploy dengan reset database (HATI-HATI: hapus semua data!)
 bash scripts/deploy.sh --fresh-db
-
-# Deploy dengan perpanjang SSL
-bash scripts/deploy.sh --ssl-renew
 ```
 
 ---
@@ -304,9 +277,6 @@ docker system df
 
 # Bersihkan resources yang tidak terpakai
 docker system prune -f
-
-# Bersihkan images yang tidak terpakai
-docker image prune -f
 ```
 
 ---
@@ -316,66 +286,51 @@ docker image prune -f
 ### ❌ Container app terus restart
 
 ```bash
-# Cek log error
 docker compose logs app
-
-# Biasanya:
-# - .env.production belum benar (APP_KEY kosong)
-# - MySQL belum siap (tunggu healthcheck)
-# - Permission issue di storage/
+# Biasanya: APP_KEY kosong, MySQL belum siap, atau permission issue
 docker compose exec app chmod -R 775 storage bootstrap/cache
 ```
 
-### ❌ 502 Bad Gateway di Nginx
+### ❌ 502 Bad Gateway
 
 ```bash
-# Cek apakah PHP-FPM berjalan
 docker compose ps app
-
-# Cek Nginx error log
 docker compose logs nginx
-
-# Biasanya: PHP-FPM belum start atau crash
+# Biasanya: PHP-FPM belum start
 docker compose restart app
 ```
 
 ### ❌ CORS Error di browser
 
-Pastikan `FRONTEND_URL` di `.env.production` sesuai dengan domain yang diakses:
+Pastikan `FRONTEND_URL` di `.env.production` sesuai:
 ```
-FRONTEND_URL=https://stikomtunasbangsa.ac.id
+FRONTEND_URL=https://stikomtunasbangsa.ac.id/v2
 ```
 
-### ❌ SSL Certificate gagal
+### ❌ Halaman tidak ditemukan (404) di subpath /v2
 
 ```bash
-# Pastikan domain sudah mengarah ke IP server
-dig stikomtunasbangsa.ac.id
+# Pastikan Vite build menggunakan base '/v2/'
+docker compose exec app env | grep VITE
 
-# Pastikan port 80 bisa diakses (untuk ACME challenge)
-curl http://stikomtunasbangsa.ac.id/.well-known/acme-challenge/test
-
-# Cek log Certbot
-docker compose logs certbot
+# Rebuild frontend
+docker compose build frontend
+docker compose up -d frontend
+docker compose restart nginx
 ```
 
-### ❌ Permission denied pada storage
+### ❌ API calls gagal (404 atau wrong path)
 
+Pastikan request API mengarah ke `/v2/api/...` (bukan `/api/...`):
 ```bash
-docker compose exec app chown -R appuser:appgroup storage bootstrap/cache
-docker compose exec app chmod -R 775 storage bootstrap/cache
+curl http://localhost:8800/v2/api/programs
 ```
 
 ### ❌ MySQL connection refused
 
 ```bash
-# Cek apakah MySQL sudah healthy
 docker compose ps mysql
-
-# Cek dengan detail
-docker inspect stikomtb-mysql | grep -A 10 Health
-
-# Pastikan DB_HOST=mysql (bukan localhost atau 127.0.0.1)
+# Pastikan DB_HOST=mysql di .env.production (bukan localhost)
 ```
 
 ---
@@ -384,22 +339,15 @@ docker inspect stikomtb-mysql | grep -A 10 Health
 
 ```mermaid
 flowchart TD
-    A["🖥️ Server Ubuntu Baru"] --> B["scripts/setup-server.sh<br/>(Install Docker, UFW, user)"]
-    B --> C["git clone → /var/www/stikomtb"]
-    C --> D["cp .env.production.example → .env.production<br/>Isi password & config"]
-    D --> E["docker compose build"]
-    E --> F["docker compose up -d<br/>(HTTP-only dulu)"]
-    F --> G["php artisan migrate --seed"]
-    G --> H["Verifikasi HTTP ✅"]
-    H --> I["Certbot: dapatkan SSL"]
-    I --> J["Ganti Nginx config → HTTPS"]
-    J --> K["docker compose restart nginx"]
-    K --> L["Verifikasi HTTPS ✅"]
-    L --> M["Setup cron SSL auto-renew"]
-    M --> N["🎉 Deployment Selesai!"]
+    A["🖥️ Server Ubuntu"] --> B["scripts/setup-server.sh<br/>(Install Docker, UFW)"]
+    B --> C["Konfigurasi Reverse Proxy Utama<br/>(Forward /v2 → :8800)"]
+    C --> D["git clone → /var/www/stikomtb"]
+    D --> E["cp .env.production.example → .env.production<br/>Isi password & config"]
+    E --> F["docker compose build"]
+    F --> G["docker compose up -d"]
+    G --> H["php artisan migrate --seed"]
+    H --> I["Verifikasi ✅<br/>https://stikomtunasbangsa.ac.id/v2"]
 
     style A fill:#64748b,stroke:#475569,color:#fff
-    style N fill:#10b981,stroke:#059669,color:#fff
-    style H fill:#f59e0b,stroke:#d97706,color:#fff
-    style L fill:#10b981,stroke:#059669,color:#fff
+    style I fill:#10b981,stroke:#059669,color:#fff
 ```

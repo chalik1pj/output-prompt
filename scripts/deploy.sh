@@ -11,8 +11,6 @@
 # Opsi:
 #   --skip-build    Skip Docker image rebuild (deploy cepat)
 #   --fresh-db      Jalankan migrate:fresh + seed (HAPUS DATA!)
-#   --ssl-init      Inisialisasi sertifikat SSL (pertama kali)
-#   --ssl-renew     Perpanjang sertifikat SSL
 # ============================================================
 
 set -euo pipefail
@@ -32,15 +30,11 @@ info()  { echo -e "${CYAN}[i]${NC} $1"; }
 # ── Parse arguments ──────────────────────────────────────────
 SKIP_BUILD=false
 FRESH_DB=false
-SSL_INIT=false
-SSL_RENEW=false
 
 for arg in "$@"; do
     case $arg in
         --skip-build) SKIP_BUILD=true ;;
         --fresh-db)   FRESH_DB=true ;;
-        --ssl-init)   SSL_INIT=true ;;
-        --ssl-renew)  SSL_RENEW=true ;;
         *) warn "Argumen tidak dikenal: $arg" ;;
     esac
 done
@@ -135,33 +129,6 @@ docker compose exec -T app php artisan view:cache
 docker compose exec -T app php artisan storage:link 2>/dev/null || true
 log "Laravel cache di-optimize"
 
-# ── 6. SSL (jika diminta) ────────────────────────────────────
-if [ "$SSL_INIT" = true ]; then
-    info "Menginisialisasi sertifikat SSL..."
-
-    # Pastikan Nginx bisa serve ACME challenge
-    # (harus pakai default-http-only.conf dulu)
-    docker compose run --rm certbot certonly \
-        --webroot \
-        -w /var/www/certbot \
-        -d stikomtunasbangsa.ac.id \
-        -d www.stikomtunasbangsa.ac.id \
-        --email admin@stikomtunasbangsa.ac.id \
-        --agree-tos \
-        --no-eff-email
-
-    log "Sertifikat SSL berhasil dibuat"
-    info "Sekarang ganti Nginx config ke versi HTTPS:"
-    echo "  cp docker/nginx/default.conf.https docker/nginx/default.conf"
-    echo "  docker compose restart nginx"
-fi
-
-if [ "$SSL_RENEW" = true ]; then
-    info "Memperpanjang sertifikat SSL..."
-    docker compose run --rm certbot renew
-    docker compose exec nginx nginx -s reload
-    log "Sertifikat SSL diperpanjang"
-fi
 
 # ── 7. Verifikasi ───────────────────────────────────────────
 info "Memverifikasi status containers..."
@@ -171,7 +138,7 @@ echo ""
 
 # Cek apakah semua service running
 RUNNING=$(docker compose ps --format '{{.State}}' 2>/dev/null | grep -c "running" || echo "0")
-EXPECTED=3  # app, nginx, mysql (frontend exits after build, certbot exits)
+EXPECTED=3  # app, nginx, mysql (frontend exits after build)
 
 if [ "$RUNNING" -ge "$EXPECTED" ]; then
     log "Semua $EXPECTED service utama berjalan"
@@ -182,25 +149,15 @@ else
     echo "  docker compose logs mysql"
 fi
 
-# ── 8. Setup cron SSL renew (jika belum ada) ────────────────
-if [ "$SSL_INIT" = true ]; then
-    CRON_CMD="0 3 * * 0 cd $PROJECT_DIR && docker compose run --rm certbot renew && docker compose exec nginx nginx -s reload >> /var/log/certbot-renew.log 2>&1"
-    if ! crontab -l 2>/dev/null | grep -q "certbot renew"; then
-        (crontab -l 2>/dev/null; echo "$CRON_CMD") | crontab -
-        log "Cron job SSL auto-renew ditambahkan (setiap Minggu jam 03:00)"
-    else
-        warn "Cron job SSL renew sudah ada"
-    fi
-fi
-
-# ── Selesai ──────────────────────────────────────────────────
+# ── 8. Selesai ───────────────────────────────────────────────
 echo ""
 echo "=============================================="
 echo "  Deployment selesai!"
 echo "=============================================="
 echo ""
 info "Aplikasi bisa diakses di:"
-echo "  https://stikomtunasbangsa.ac.id"
+echo "  https://stikomtunasbangsa.ac.id/v2"
+echo "  (Nginx container berjalan di port 8800)"
 echo ""
 info "Perintah berguna:"
 echo "  docker compose logs -f app       # Log backend"
