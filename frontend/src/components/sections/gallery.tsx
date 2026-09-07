@@ -3,10 +3,21 @@ import { X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
-import { galleryImages } from '@/lib/data'
+import api from '@/lib/api'
+
+interface GalleryWidget {
+  id: number
+  title: string | null
+  image_url: string | null
+}
 
 export function GallerySection() {
+  const [images, setImages] = useState<GalleryWidget[]>([])
   const [active, setActive] = useState<number | null>(null)
+
+  useEffect(() => {
+    api.get('/widgets', { params: { type: 'gallery_image' } }).then((r) => setImages(r.data.data ?? []))
+  }, [])
 
   const close = useCallback(() => setActive(null), [])
 
@@ -24,6 +35,10 @@ export function GallerySection() {
     }
   }, [active, close])
 
+  if (images.length === 0) return null
+
+  const activeImage = active !== null ? images[active] : null
+
   return (
     <section id="gallery" className="relative py-20 sm:py-28">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-secondary/40" />
@@ -36,22 +51,24 @@ export function GallerySection() {
 
         <Reveal className="mt-12">
           <div className="grid auto-rows-[180px] grid-cols-2 gap-4 sm:auto-rows-[200px] lg:grid-cols-4">
-            {galleryImages.map((img, i) => (
+            {images.map((img, i) => (
               <button
-                key={img.src}
+                key={img.id}
                 type="button"
                 onClick={() => setActive(i)}
-                className={`group relative overflow-hidden rounded-2xl border border-border ${img.span}`}
+                className={`group relative overflow-hidden rounded-2xl border border-border ${i % 3 === 0 ? 'row-span-2' : ''}`}
               >
                 <img
-                  src={img.src}
-                  alt={img.alt}
+                  src={img.image_url ?? ''}
+                  alt={img.title ?? 'Foto kampus'}
                   className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <span className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                <span className="absolute bottom-3 left-3 translate-y-2 text-sm font-semibold text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                  {img.alt}
-                </span>
+                {img.title && (
+                  <span className="absolute bottom-3 left-3 translate-y-2 text-sm font-semibold text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    {img.title}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -60,7 +77,7 @@ export function GallerySection() {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {active !== null ? (
+        {activeImage ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -84,8 +101,8 @@ export function GallerySection() {
               className="relative aspect-[16/10] w-full max-w-4xl overflow-hidden rounded-2xl border border-border shadow-2xl"
             >
               <img
-                src={galleryImages[active].src}
-                alt={galleryImages[active].alt}
+                src={activeImage.image_url ?? ''}
+                alt={activeImage.title ?? 'Foto kampus'}
                 className="size-full object-cover"
               />
             </motion.div>

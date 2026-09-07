@@ -22,7 +22,6 @@ export type Feature = {
   image: string;
 };
 
-// "Mengapa Memilih Kami" -- 6 kartu di Beranda
 export const features: Feature[] = [
   {
     icon: Award,
@@ -186,31 +185,6 @@ export const achievements: Achievement[] = [
     description:
       "Menjadi authorized training partner untuk sertifikasi cloud dan keamanan kelas dunia.",
     year: "2023",
-  },
-];
-
-export const galleryImages = [
-  {
-    src: "/images/gallery-lab.webp",
-    alt: "Modern computer laboratory",
-    span: "row-span-2",
-  },
-  {
-    src: "/images/gallery-students.webp",
-    alt: "Students collaborating",
-    span: "",
-  },
-  { src: "/images/gallery-library.webp", alt: "University library", span: "" },
-  {
-    src: "/images/gallery-campus.webp",
-    alt: "Campus aerial view",
-    span: "row-span-2",
-  },
-  { src: "/images/gallery-lecture.webp", alt: "Lecture hall", span: "" },
-  {
-    src: "/images/gallery-graduation.webp",
-    alt: "Graduation ceremony",
-    span: "",
   },
 ];
 

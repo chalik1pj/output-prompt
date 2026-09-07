@@ -12,6 +12,7 @@ class SiteWidgetSeeder extends Seeder
         $this->seedTestimonials();
         $this->seedPartners();
         $this->seedStats();
+        $this->seedGallery();
     }
 
     private function seedTestimonials(): void
@@ -86,6 +87,30 @@ class SiteWidgetSeeder extends Seeder
                 [
                     'widget_type' => 'campus_stat',
                     'value' => $item['value'],
+                    'display_order' => $index + 1,
+                    'is_active' => true,
+                ]
+            );
+        }
+    }
+
+    private function seedGallery(): void
+    {
+        $images = [
+            ['title' => 'Modern computer laboratory', 'image_url' => '/images/gallery-lab.webp'],
+            ['title' => 'Students collaborating', 'image_url' => '/images/gallery-students.webp'],
+            ['title' => 'University library', 'image_url' => '/images/gallery-library.webp'],
+            ['title' => 'Campus aerial view', 'image_url' => '/images/gallery-campus.webp'],
+            ['title' => 'Lecture hall', 'image_url' => '/images/gallery-lecture.webp'],
+            ['title' => 'Graduation ceremony', 'image_url' => '/images/gallery-graduation.webp'],
+        ];
+
+        foreach ($images as $index => $item) {
+            SiteWidget::updateOrCreate(
+                ['widget_type' => 'gallery_image', 'image_url' => $item['image_url']],
+                [
+                    'widget_type' => 'gallery_image',
+                    'title' => $item['title'],
                     'display_order' => $index + 1,
                     'is_active' => true,
                 ]
