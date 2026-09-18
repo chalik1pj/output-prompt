@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, GraduationCap, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react'
 import { useRef } from 'react'
 import { GradientButton } from '@/components/site/gradient-button'
+import { assetUrl } from '@/lib/utils'
 import { site } from '@/lib/site'
 
 const container = {
@@ -41,7 +42,7 @@ export function Hero() {
           className="relative h-full w-full"
         >
           <img
-            src="/images/hero-campus-wide.webp"
+            src={assetUrl('/images/hero-campus-wide.webp')}
             alt="Kampus teknologi STIKOM Tunas Bangsa yang megah saat blue hour"
             className="size-full object-cover object-center"
           />

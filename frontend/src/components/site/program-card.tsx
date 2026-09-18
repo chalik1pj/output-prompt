@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { cn, assetUrl } from '@/lib/utils'
 
 function degreeBadgeClass(degree: string) {
   if (degree?.startsWith('D3'))
@@ -10,10 +10,27 @@ function degreeBadgeClass(degree: string) {
   return 'border-white/20 bg-black/30 text-white'
 }
 
+const PROGRAM_IMAGE_MAP: Record<string, string> = {
+  'teknik-informatika': '/images/program-informatics.webp',
+  'sistem-informasi': '/images/program-information-systems.webp',
+  'computer-engineering': '/images/program-computer-engineering.webp',
+  'teknik-komputer': '/images/program-computer-engineering.webp',
+  'data-science': '/images/program-data-science.webp',
+  'sains-data-ai': '/images/program-data-science.webp',
+  'cybersecurity': '/images/program-cybersecurity.webp',
+  'keamanan-siber': '/images/program-cybersecurity.webp',
+  'digital-product-design': '/images/program-design.webp',
+  'desain-produk-digital': '/images/program-design.webp',
+  'manajemen-informatika': '/images/program-information-systems.webp',
+  'informatika-komputer-s2': '/images/program-informatics.webp',
+}
+
 export function ProgramCard({ program }: { program: any }) {
   const title = program.title || program.name
   const slug = program.slug
-  const image = program.image || program.card_image_url || '/images/hero-campus.webp'
+  const fallback = (slug && PROGRAM_IMAGE_MAP[slug]) || '/images/hero-campus.webp'
+  const rawImage = program.image || program.card_image_url || fallback
+  const image = assetUrl(rawImage)
   const degree = program.degree || program.degree_level || 'S1'
   const description = program.description || program.short_description
   const highlights = program.highlights || program.competencies || []

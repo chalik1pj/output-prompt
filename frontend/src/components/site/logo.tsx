@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { site } from '@/lib/site'
-import { cn } from '@/lib/utils'
+import { cn, assetUrl } from '@/lib/utils'
 
 export function Logo({
   className,
@@ -13,7 +13,7 @@ export function Logo({
     <Link to="/" className={cn('group flex items-center gap-2.5', className)}>
       <span className="relative inline-flex size-9 items-center justify-center transition-transform duration-300 group-hover:scale-105">
         <img
-          src="/images/stikom-emblem.png"
+          src={assetUrl('/images/stikom-emblem.png')}
           alt={`Logo ${site.name}`}
           width={128}
           height={128}

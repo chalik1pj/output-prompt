@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
 import { campusHighlights, timeline } from '@/lib/data'
+import { assetUrl } from '@/lib/utils'
 
 const missions = [
   'Memberikan pendidikan teknologi terapan berbasis proyek yang memenuhi kebutuhan nyata industri.',
@@ -61,7 +62,7 @@ export default function ProfilPage() {
         <Reveal>
           <div className="relative aspect-[16/7] overflow-hidden rounded-3xl border border-border/60">
             <img
-              src="/images/profil-campus.webp"
+              src={assetUrl('/images/profil-campus.webp')}
               alt="Pintu masuk kampus STIKOM Tunas Bangsa"
               className="size-full object-cover"
             />

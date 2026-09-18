@@ -14,6 +14,7 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
+import { assetUrl } from "@/lib/utils";
 
 export type Feature = {
   icon: LucideIcon;
@@ -28,42 +29,42 @@ export const features: Feature[] = [
     title: "Program Terakreditasi",
     description:
       "Gelar terakreditasi BAN-PT yang diakui secara nasional dan memenuhi standar akademik dan industri yang ketat.",
-    image: "/images/gallery-graduation.webp",
+    image: assetUrl("/images/gallery-graduation.webp"),
   },
   {
     icon: BriefcaseBusiness,
     title: "Kemitraan Industri",
     description:
       "Kolaborasi mendalam dengan perusahaan teknologi terkemuka untuk magang, proyek nyata, dan mentoring terjamin.",
-    image: "/images/news-2.webp",
+    image: assetUrl("/images/news-2.webp"),
   },
   {
     icon: FlaskConical,
     title: "Laboratorium Modern",
     description:
       "Lab AI, networking, IoT, dan keamanan siber terkini dilengkapi dengan peralatan tingkat enterprise.",
-    image: "/images/gallery-lab.webp",
+    image: assetUrl("/images/gallery-lab.webp"),
   },
   {
     icon: GraduationCap,
     title: "Dosen Bersertifikat",
     description:
       "Belajar dari pendidik bersertifikat dan praktisi yang membawa pengalaman rekayasa dunia nyata ke kelas.",
-    image: "/images/gallery-lecture.webp",
+    image: assetUrl("/images/gallery-lecture.webp"),
   },
   {
     icon: Globe2,
     title: "Kolaborasi Internasional",
     description:
       "Program pertukaran global, penelitian bersama, dan sertifikasi yang diakui di seluruh dunia.",
-    image: "/images/profil-campus.webp",
+    image: assetUrl("/images/profil-campus.webp"),
   },
   {
     icon: Network,
     title: "Tingkat Kelulusan Tinggi",
     description:
       "94% lulusan kami bekerja atau membangun startup dalam enam bulan setelah kelulusan.",
-    image: "/images/gallery-students.webp",
+    image: assetUrl("/images/gallery-students.webp"),
   },
 ];
 

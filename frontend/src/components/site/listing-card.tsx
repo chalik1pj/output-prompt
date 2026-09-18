@@ -1,5 +1,6 @@
 import { ArrowUpRight, CalendarDays, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { assetUrl } from '@/lib/utils'
 
 export interface ListingCardItem {
   content_type: string
@@ -39,7 +40,7 @@ export function ListingCard({ item }: { item: ListingCardItem }) {
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-secondary">
         <img
-          src={item.featured_image_url || '/images/news-1.webp'}
+          src={item.featured_image_url ? assetUrl(item.featured_image_url) : assetUrl('/images/news-1.webp')}
           alt={item.title}
           className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

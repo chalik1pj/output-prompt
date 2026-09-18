@@ -3,44 +3,45 @@ import { GlassCard } from '@/components/site/glass-card'
 import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
+import { assetUrl } from '@/lib/utils'
 
 const fasilitas = [
   {
-    image: '/images/gallery-lab.webp',
+    image: assetUrl('/images/gallery-lab.webp'),
     title: 'Laboratorium Cerdas',
     badge: 'Lab',
     description:
       'Lab AI, IoT, networking, dan keamanan siber dengan peralatan setara standar enterprise, digunakan untuk praktikum dan proyek riset mahasiswa.',
   },
   {
-    image: '/images/gallery-students.webp',
+    image: assetUrl('/images/gallery-students.webp'),
     title: 'Hub Inovasi',
     badge: 'Startup',
     description:
       'Inkubator startup kampus tempat ide mahasiswa dikembangkan menjadi produk nyata, lengkap dengan mentoring dari praktisi industri.',
   },
   {
-    image: '/images/gallery-lecture.webp',
+    image: assetUrl('/images/gallery-lecture.webp'),
     title: 'Kelas Global',
     badge: 'Akademik',
     description:
       'Ruang kelas hybrid yang terhubung dengan mitra internasional untuk kuliah tamu dan kolaborasi lintas negara.',
   },
   {
-    image: '/images/gallery-campus.webp',
+    image: assetUrl('/images/gallery-campus.webp'),
     title: 'Ruang Kolaboratif',
     badge: 'Ruang Kolaborasi',
     description: 'Studio terbuka dan maker space yang dirancang untuk kerja tim lintas program studi.',
   },
   {
-    image: '/images/gallery-library.webp',
+    image: assetUrl('/images/gallery-library.webp'),
     title: 'Perpustakaan Digital',
     badge: 'Akademik',
     description:
       'Akses koleksi buku fisik dan digital, jurnal ilmiah, serta ruang baca tenang untuk riset mandiri.',
   },
   {
-    image: '/images/gallery-graduation.webp',
+    image: assetUrl('/images/gallery-graduation.webp'),
     title: 'Aula & Ruang Seminar',
     badge: 'Fasilitas',
     description: 'Ruang serbaguna untuk seminar, wisuda, dan kegiatan kemahasiswaan berskala besar.',
@@ -48,12 +49,12 @@ const fasilitas = [
 ]
 
 const galleryPhotos = [
-  { src: '/images/gallery-lab.webp', caption: 'Laboratorium modern dengan peralatan enterprise' },
-  { src: '/images/gallery-students.webp', caption: 'Mahasiswa berkolaborasi di hub inovasi' },
-  { src: '/images/gallery-library.webp', caption: 'Perpustakaan digital dan ruang baca' },
-  { src: '/images/gallery-campus.webp', caption: 'Suasana kampus STIKOM Tunas Bangsa' },
-  { src: '/images/gallery-lecture.webp', caption: 'Kelas interaktif dengan fasilitas hybrid' },
-  { src: '/images/gallery-graduation.webp', caption: 'Hari wisuda — merayakan pencapaian bersama' },
+  { src: assetUrl('/images/gallery-lab.webp'), caption: 'Laboratorium modern dengan peralatan enterprise' },
+  { src: assetUrl('/images/gallery-students.webp'), caption: 'Mahasiswa berkolaborasi di hub inovasi' },
+  { src: assetUrl('/images/gallery-library.webp'), caption: 'Perpustakaan digital dan ruang baca' },
+  { src: assetUrl('/images/gallery-campus.webp'), caption: 'Suasana kampus STIKOM Tunas Bangsa' },
+  { src: assetUrl('/images/gallery-lecture.webp'), caption: 'Kelas interaktif dengan fasilitas hybrid' },
+  { src: assetUrl('/images/gallery-graduation.webp'), caption: 'Hari wisuda — merayakan pencapaian bersama' },
 ]
 
 const breadcrumbItems = [

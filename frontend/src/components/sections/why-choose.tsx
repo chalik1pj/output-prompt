@@ -1,6 +1,7 @@
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
 import { features } from '@/lib/data'
+import { assetUrl } from '@/lib/utils'
 
 export function WhyChooseSection() {
   return (
@@ -22,7 +23,7 @@ export function WhyChooseSection() {
               >
                 <div className="relative h-36 overflow-hidden bg-secondary">
                   <img
-                    src={feature.image || '/images/gallery-campus.webp'}
+                    src={feature.image || assetUrl('/images/gallery-campus.webp')}
                     alt=""
                     className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />

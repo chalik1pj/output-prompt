@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import { NewsCard, type NewsCardItem } from '@/components/site/news-card'
 import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/site/reveal'
+import { assetUrl } from '@/lib/utils'
 import api from '@/lib/api'
 
 interface PostDetail {
@@ -113,7 +114,7 @@ export default function InformationDetailPage() {
           {post.featured_image_url && (
             <div className="overflow-hidden rounded-3xl border border-border">
               <img
-                src={post.featured_image_url}
+                src={assetUrl(post.featured_image_url)}
                 alt={post.title}
                 className="max-h-[450px] w-full object-cover"
               />

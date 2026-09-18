@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { SectionHeading } from '@/components/site/section-heading'
+import { assetUrl } from '@/lib/utils'
 import api from '@/lib/api'
 
 interface TestimonialWidget {
@@ -68,7 +69,7 @@ export function TestimonialsSection() {
                   <footer className="mt-6 flex items-center gap-3">
                     <span className="relative inline-flex size-12 shrink-0 overflow-hidden rounded-full ring-2 ring-primary/30">
                       <img
-                        src={active.image_url || '/images/avatar-rani.webp'}
+                        src={active.image_url ? assetUrl(active.image_url) : assetUrl('/images/avatar-rani.webp')}
                         alt={`Foto ${active.title}`}
                         className="size-full object-cover"
                       />

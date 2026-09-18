@@ -4,6 +4,7 @@ import { GlassCard } from '@/components/site/glass-card'
 import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
+import { assetUrl } from '@/lib/utils'
 
 const logoVariants = [
   {
@@ -80,7 +81,7 @@ export default function LogoPage() {
                 <div className={`flex items-center justify-center ${v.bgClass} p-10`}>
                   <div className="relative h-24 w-24">
                     <img
-                      src="/images/stikom-emblem.webp"
+                      src={assetUrl('/images/stikom-emblem.png')}
                       alt={v.title}
                       className={`size-full object-contain ${v.imgClass}`}
                     />

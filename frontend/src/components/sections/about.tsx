@@ -1,4 +1,5 @@
 import { Compass, Rocket, Target } from 'lucide-react'
+import { assetUrl } from '@/lib/utils'
 import { GradientButton } from '@/components/site/gradient-button'
 import { Reveal } from '@/components/site/reveal'
 import { campusHighlights } from '@/lib/data'
@@ -14,7 +15,7 @@ export function AboutSection() {
             <div className="absolute -bottom-6 -left-6 -z-10 size-48 rounded-full bg-primary/15 blur-3xl" />
             <div className="overflow-hidden rounded-[2rem] border border-border shadow-xl">
               <img
-                src="/images/profil-campus.webp"
+                src={assetUrl('/images/profil-campus.webp')}
                 alt="STIKOM Tunas Bangsa campus entrance"
                 className="h-full w-full object-cover"
               />

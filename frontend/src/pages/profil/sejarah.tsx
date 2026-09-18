@@ -5,6 +5,7 @@ import { GradientButton } from '@/components/site/gradient-button'
 import { PageHeader } from '@/components/site/page-header'
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
+import { assetUrl } from '@/lib/utils'
 
 const milestones = [
   {
@@ -130,8 +131,8 @@ export default function SejarahPage() {
         <SectionHeading eyebrow="Galeri" title="Kenangan & Momen Penting" />
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {[
-            { src: '/images/gallery-graduation.webp', alt: 'Wisuda STIKOM Tunas Bangsa', caption: 'Hari wisuda — melepas lulusan siap berkarya' },
-            { src: '/images/profil-campus.webp', alt: 'Kampus STIKOM Tunas Bangsa', caption: 'Kampus STIKOM Tunas Bangsa di Pematangsiantar' },
+            { src: assetUrl('/images/gallery-graduation.webp'), alt: 'Wisuda STIKOM Tunas Bangsa', caption: 'Hari wisuda — melepas lulusan siap berkarya' },
+            { src: assetUrl('/images/profil-campus.webp'), alt: 'Kampus STIKOM Tunas Bangsa', caption: 'Kampus STIKOM Tunas Bangsa di Pematangsiantar' },
           ].map((img, i) => (
             <Reveal key={img.src} delay={i * 0.05}>
               <div className="group overflow-hidden rounded-2xl border border-border/60">

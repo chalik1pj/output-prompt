@@ -3,6 +3,7 @@ import { X } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { Reveal } from '@/components/site/reveal'
 import { SectionHeading } from '@/components/site/section-heading'
+import { assetUrl } from '@/lib/utils'
 import api from '@/lib/api'
 
 interface GalleryWidget {
@@ -59,7 +60,7 @@ export function GallerySection() {
                 className={`group relative overflow-hidden rounded-2xl border border-border ${i % 3 === 0 ? 'row-span-2' : ''}`}
               >
                 <img
-                  src={img.image_url ?? ''}
+                  src={assetUrl(img.image_url ?? '')}
                   alt={img.title ?? 'Foto kampus'}
                   className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
@@ -101,7 +102,7 @@ export function GallerySection() {
               className="relative aspect-[16/10] w-full max-w-4xl overflow-hidden rounded-2xl border border-border shadow-2xl"
             >
               <img
-                src={activeImage.image_url ?? ''}
+                src={assetUrl(activeImage.image_url ?? '')}
                 alt={activeImage.title ?? 'Foto kampus'}
                 className="size-full object-cover"
               />

@@ -1,6 +1,7 @@
 import { useState, useRef } from "react"
 import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react"
 import api from "@/lib/api"
+import { assetUrl } from "@/lib/utils"
 
 interface ImageUploadInputProps {
   label: string
@@ -89,7 +90,7 @@ export function ImageUploadInput({ label, value, onChange, placeholder, required
           ) : value ? (
             <div className="w-full relative z-20 group">
               <img
-                src={value}
+                src={assetUrl(value)}
                 alt="Preview"
                 className="max-h-[200px] mx-auto rounded object-contain"
               />

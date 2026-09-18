@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Reveal } from '@/components/site/reveal'
+import { assetUrl } from '@/lib/utils'
 import api from '@/lib/api'
 
 interface PartnerWidget {
@@ -36,7 +37,7 @@ export function PartnersSection() {
                 <>
                   {p.image_url && (
                     <img
-                      src={p.image_url}
+                      src={assetUrl(p.image_url!)}
                       alt={p.title}
                       className="max-h-8 max-w-[120px] object-contain"
                       onError={(e) => {
