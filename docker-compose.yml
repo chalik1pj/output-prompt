@@ -59,16 +59,21 @@ services:
     container_name: stikomtb-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
+      # BUG KEAMANAN YANG DIPERBAIKI: sebelumnya `${DB_ROOT_PASSWORD:-secret}` --
+      # kalau .env.production lupa dibuat/di-isi, docker compose diam-diam jalan
+      # dengan password root MySQL literal "secret". Sekarang dipaksa gagal
+      # dengan pesan jelas kalau variabelnya belum diset, bukan mengorbankan
+      # keamanan demi "tetap bisa jalan".
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD wajib diisi di .env.production}
       MYSQL_DATABASE: ${DB_DATABASE:-stikomtb-main}
       MYSQL_USER: ${DB_USERNAME:-stikomtb}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD wajib diisi di .env.production}
     volumes:
       - mysql-data:/var/lib/mysql
     ports:
       - "127.0.0.1:3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-secret}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD wajib diisi di .env.production}"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -33,7 +33,14 @@ Thumbs.db
 
 # Docker & env files
 docker-compose.override.yml
-.env.production
+# BUG YANG DIPERBAIKI: sebelumnya cuma .env.production yang dikecualikan.
+# .dockerignore TIDAK otomatis mewarisi aturan .gitignore -- kalau developer
+# build image ini dari mesin lokal yang punya backend/.env asli (kredensial DB,
+# APP_KEY, dst), file itu bisa ikut ter-copy ke build context lalu ter-bake
+# permanen ke dalam layer image Docker walau tidak pernah di-commit ke git.
+.env
+.env.*
+!.env.*.example
 
 # Logs
 *.log

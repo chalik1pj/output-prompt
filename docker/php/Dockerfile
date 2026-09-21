@@ -29,10 +29,16 @@ RUN composer dump-autoload --optimize --no-dev
 FROM php:8.2-fpm-alpine AS production
 
 # Install system dependencies & PHP extensions
+# CATATAN: `libwebp-dev` WAJIB ada di sini -- tanpanya, GD dikompilasi tanpa
+# dukungan WebP dan imagewebp() akan selalu gagal (return false + PHP warning,
+# bukan error yang jelas) di dalam container ini. Sebelumnya hilang dari daftar,
+# menyebabkan SEMUA upload gambar lewat admin panel menghasilkan file rusak/tidak
+# ada saat dijalankan lewat Docker (lihat MediaController.php untuk fallback-nya).
 RUN apk add --no-cache \
         freetype-dev \
         libjpeg-turbo-dev \
         libpng-dev \
+        libwebp-dev \
         libzip-dev \
         icu-dev \
         oniguruma-dev \
@@ -40,6 +46,7 @@ RUN apk add --no-cache \
     && docker-php-ext-configure gd \
         --with-freetype \
         --with-jpeg \
+        --with-webp \
     && docker-php-ext-install -j$(nproc) \
         pdo_mysql \
         mbstring \
